@@ -25,3 +25,7 @@ default['logstash']['instance_default']['checksum']      = 'a12f91bc87f6cd8f1b48
 # default['logstash']['instance_default']['elasticsearch_ip'] = ''
 # default['logstash']['instance_default']['elasticsearch_port'] = ''
 default['logstash']['instance_default']['elasticsearch_embedded'] = false
+
+default['mconf-stats']['logstash']['inputs'] = []
+# Example:
+# [ { name: '0-first-input.conf', path: '/my/file/1.log', type: 'rails', codec: 'json' } ]

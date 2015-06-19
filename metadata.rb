@@ -13,7 +13,8 @@ license          "MPL v2.0"
 description      "Sets up an instance of Mconf-Stats"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.0.1"
-depends          'logstash', '~> 0.11.4'
-depends          'elasticsearch', '~> 0.3.13'
+#depends          'logstash', '~> 0.11.4'
+#depends          'elasticsearch', '~> 0.3.13'
+depends          'elkstack', '~> 6.0.0'
 
 recipe "mconf-stats::default", "Sets up an instance of Mconf-Stats"

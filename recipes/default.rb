@@ -19,7 +19,7 @@ end
 logstash_name = 'mconf'
 logstash_service_name = "logstash_#{logstash_name}"
 logstash_home = "#{node['logstash']['instance_default']['basedir']}/#{logstash_name}"
-logstash_conf_dir = "#{logstash_home}/etc/conf.d/"
+logstash_conf_dir = "#{logstash_home}/etc/conf.d"
 
 logstash_instance logstash_name do
   create_account true
@@ -56,16 +56,40 @@ service logstash_service_name do
   action [:enable, :start]
 end
 
+
+configs_created= []
+
 node['mconf-stats']['logstash']['inputs'].each do |config|
-  template "#{logstash_conf_dir}/#{config[:name]}" do
+  tmpl = template "#{logstash_conf_dir}/#{config[:name]}" do
     source 'logstash/input_file.conf.erb'
-    # cookbook    conf[:templates_cookbook]
     owner       node['logstash']['instance_default']['user']
     group       node['logstash']['instance_default']['group']
     mode        '0644'
     variables   config
     action      :create
     notifies    :restart, "service[#{logstash_service_name}]"
+  end
+  configs_created << tmpl.name
+end
+
+node['mconf-stats']['logstash']['outputs']['elasticsearch'].each do |config|
+  tmpl = template "#{logstash_conf_dir}/#{config[:name]}" do
+    source 'logstash/output_elasticsearch.conf.erb'
+    owner       node['logstash']['instance_default']['user']
+    group       node['logstash']['instance_default']['group']
+    mode        '0644'
+    variables   config
+    action      :create
+    notifies    :restart, "service[#{logstash_service_name}]"
+  end
+  configs_created << tmpl.name
+end
+
+# Remove old configs we didn't create
+Dir["#{logstash_conf_dir}/*.conf"].each do |path|
+  file path do
+    action :delete
+    not_if { configs_created.include?(path) }
   end
 end
 

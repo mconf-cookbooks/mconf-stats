@@ -24,8 +24,28 @@ default['logstash']['instance_default']['checksum']      = 'a12f91bc87f6cd8f1b48
 # default['logstash']['instance_default']['elasticsearch_cluster'] = 'logstash'
 # default['logstash']['instance_default']['elasticsearch_ip'] = ''
 # default['logstash']['instance_default']['elasticsearch_port'] = ''
-default['logstash']['instance_default']['elasticsearch_embedded'] = false
+# default['logstash']['instance_default']['elasticsearch_embedded'] = false
 
-default['mconf-stats']['logstash']['inputs'] = []
 # Example:
-# [ { name: '0-first-input.conf', path: '/my/file/1.log', type: 'rails', codec: 'json' } ]
+# [
+#   {
+#     name: '0-input-main.conf',
+#     path: '/my/file/1.log',
+#     type: 'rails',
+#     codec: 'json'
+#   }
+# ]
+default['mconf-stats']['logstash']['inputs'] = []
+
+# Example:
+# [
+#   {
+#     "name": "9-output-elasticsearch.conf",
+#     "host": "localhost",
+#     "cluster": "mconf_cluster",
+#     "embedded": false,
+#     "bind_host": null,
+#     "es_index": null
+#   }
+# ]
+default['mconf-stats']['logstash']['outputs']['elasticsearch'] = []

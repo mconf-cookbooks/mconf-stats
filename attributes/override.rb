@@ -7,3 +7,14 @@
 #
 
 override['logstash']['instance_default']['debug'] = node['mconf-stats']['logstash']['debug']
+override['elasticsearch']['allocated_memory'] = node['mconf-stats']['elasticsearch']['allocated_memory']
+override['elasticsearch']['version'] = node['mconf-stats']['elasticsearch']['version']
+
+elastic_dir = "elasticsearch-#{node['elasticsearch']['version']}"
+override['elasticsearch']['dir']          = '/opt'
+override['elasticsearch']['bindir']       = "/opt/#{elastic_dir}/bin"
+override['elasticsearch']['path']['conf'] = "/opt/#{elastic_dir}/etc"
+override['elasticsearch']['path']['data'] = "/opt/#{elastic_dir}/var/data"
+override['elasticsearch']['path']['logs'] = "/opt/#{elastic_dir}/var/logs"
+override['elasticsearch']['pid_path']     = "/opt/#{elastic_dir}/var/run"
+override['elasticsearch']['host']         = "https://download.elastic.co"

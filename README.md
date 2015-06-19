@@ -6,7 +6,7 @@ Install Mconf-Stats, Mconf's log analizer and statistics generator.
 Requirements
 ------------
 
-Ubuntu 12.04
+Ubuntu 14.04
 
 e.g.
 #### packages

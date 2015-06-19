@@ -19,13 +19,6 @@ default['logstash']['instance_default']['version']       = '1.5.1'
 default['logstash']['instance_default']['source_url']    = 'https://download.elasticsearch.org/logstash/logstash/logstash-1.5.1.tar.gz'
 default['logstash']['instance_default']['checksum']      = 'a12f91bc87f6cd8f1b481c9e9d0370a650b2c36fdc6a656785ef883cb1002894' # sha256sum logstash-1.5.1.tar.gz
 
-# default['logstash']['instance_default']['elasticsearch_role'] = 'elasticsearch_server'
-# default['logstash']['instance_default']['elasticsearch_query'] = "roles:#{node['logstash']['instance_default']['elasticsearch_role']} AND chef_environment:#{node.chef_environment}"
-# default['logstash']['instance_default']['elasticsearch_cluster'] = 'logstash'
-# default['logstash']['instance_default']['elasticsearch_ip'] = ''
-# default['logstash']['instance_default']['elasticsearch_port'] = ''
-# default['logstash']['instance_default']['elasticsearch_embedded'] = false
-
 # Example:
 # [
 #   {
@@ -49,3 +42,9 @@ default['mconf-stats']['logstash']['inputs'] = []
 #   }
 # ]
 default['mconf-stats']['logstash']['outputs']['elasticsearch'] = []
+
+
+# Elastic Search
+default['mconf-stats']['elasticsearch']['version'] = "1.6.0"
+default['mconf-stats']['elasticsearch']['cluster']['name'] = "mconf_cluster"
+default['mconf-stats']['elasticsearch']['allocated_memory'] = "2048m"

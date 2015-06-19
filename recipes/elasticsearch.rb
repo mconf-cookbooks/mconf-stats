@@ -10,6 +10,5 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-# TODO: use elasticsearch::proxy
-
 include_recipe 'elasticsearch'
+include_recipe 'elasticsearch::proxy'

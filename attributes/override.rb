@@ -18,3 +18,6 @@ override['elasticsearch']['path']['data'] = "/opt/#{elastic_dir}/var/data"
 override['elasticsearch']['path']['logs'] = "/opt/#{elastic_dir}/var/logs"
 override['elasticsearch']['pid_path']     = "/opt/#{elastic_dir}/var/run"
 override['elasticsearch']['host']         = "https://download.elastic.co"
+
+# To prevent an error in the elasticsearch cookbook
+override['elasticsearch']['nginx']['ssl'] = {}

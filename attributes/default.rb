@@ -13,39 +13,25 @@ default['mconf-stats']['domain'] = '192.168.0.100'
 
 default['mconf-stats']['java_pkg'] = 'openjdk-7-jre-headless'
 
-# Override some options on elkstack
-default['elkstack']['config']['logstash']['instance_name'] = 'mconf-stats'
-default['elkstack']['config']['backups']['enabled']        = false
-default['elkstack']['config']['backups']['cron']           = false
-default['elkstack']['config']['site_name']                 = 'mconf-stats'
-default['elkstack']['config']['kibana']['redirect']        = false
+# General configurations passed to elkstask
+default['mconf-stats']['logstash']['instance_name'] = 'mconf'
+default['mconf-stats']['backups']['enabled']        = false
+default['mconf-stats']['backups']['cron']           = false
+default['mconf-stats']['site_name']                 = 'mconf'
+default['mconf-stats']['kibana']['redirect']        = false
 
 # Logstash
-default['logstash']['instance']['mconf-stats']['install_type']  = 'tarball'
-default['logstash']['instance']['mconf-stats']['version']       = '1.5.1'
-default['logstash']['instance']['mconf-stats']['source_url']    = 'https://download.elasticsearch.org/logstash/logstash/logstash-1.5.1.tar.gz'
-default['logstash']['instance']['mconf-stats']['checksum']      = 'a12f91bc87f6cd8f1b481c9e9d0370a650b2c36fdc6a656785ef883cb1002894' # sha256sum logstash-1.5.1.tar.gz
+default['mconf-stats']['logstash']['debug'] = false
+default['mconf-stats']['logstash']['install_type']  = 'tarball'
+default['mconf-stats']['logstash']['version']       = '1.5.1'
+default['mconf-stats']['logstash']['source_url']    = 'https://download.elasticsearch.org/logstash/logstash/logstash-1.5.1.tar.gz'
+default['mconf-stats']['logstash']['checksum']      = 'a12f91bc87f6cd8f1b481c9e9d0370a650b2c36fdc6a656785ef883cb1002894' # sha256sum logstash-1.5.1.tar.gz
+default['mconf-stats']['logstash']['xms']           = '1536M'
+default['mconf-stats']['logstash']['xmx']           = '1536M'
 
-
-
-# default_unless['elkstack']['config']['custom_logstash']['name'] = []
-# Currently for arbitrary logstash configs, the recipe that sets up the logstash file should add:
-# node.default['elkstack']['config']['custom_logstash']['name'].push('<service_name>')
-# and then populate node['elkstack']['config']['custom_logstash'][service_name][setting] with your values
-# default['elkstack']['config']['custom_logstash'][<name>]['name'] = 'my_logstashconfig'
-# default['elkstack']['config']['custom_logstash'][<name>]['source'] = 'my_logstashconfig.conf.erb'
-# default['elkstack']['config']['custom_logstash'][<name>]['cookbook'] = 'your_cookbook'
-# default['elkstack']['config']['custom_logstash'][<name>]['variables'] = { :warning => 'foo' }
-
-
-
-
-
-# # Logstash
-# default['logstash']['instance_default']['install_type']  = 'tarball'
-# default['logstash']['instance_default']['version']       = '1.5.1'
-# default['logstash']['instance_default']['source_url']    = 'https://download.elasticsearch.org/logstash/logstash/logstash-1.5.1.tar.gz'
-# default['logstash']['instance_default']['checksum']      = 'a12f91bc87f6cd8f1b481c9e9d0370a650b2c36fdc6a656785ef883cb1002894' # sha256sum logstash-1.5.1.tar.gz
+# These are not really set on elkstack/logstash, so set them here as shortcuts for when we need them
+default['mconf-stats']['logstash']['basedir'] = "#{node['logstash']['instance_default']['basedir']}/#{default['mconf-stats']['logstash']['instance_name']}"
+default['mconf-stats']['logstash']['confdir'] = "#{node['mconf-stats']['logstash']['basedir']}/etc/conf.d"
 
 # # Example:
 # # [
@@ -56,7 +42,7 @@ default['logstash']['instance']['mconf-stats']['checksum']      = 'a12f91bc87f6c
 # #     codec: 'json'
 # #   }
 # # ]
-# default['mconf-stats']['logstash']['inputs'] = []
+default['mconf-stats']['logstash']['inputs'] = []
 
 # # Example:
 # # [
@@ -69,7 +55,7 @@ default['logstash']['instance']['mconf-stats']['checksum']      = 'a12f91bc87f6c
 # #     "es_index": null
 # #   }
 # # ]
-# default['mconf-stats']['logstash']['outputs']['elasticsearch'] = []
+default['mconf-stats']['logstash']['outputs']['elasticsearch'] = []
 
 
 # # Elastic Search

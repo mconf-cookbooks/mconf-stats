@@ -39,7 +39,7 @@ ruby_block "remove pluginpath option" do
     rc.write_file
   end
   only_if { Gem::Version.new(node['mconf-stats']['logstash']['version']) >= Gem::Version.new('1.5.0') }
-  notifies :restart, "logstash_service[#{node['mconf-stats']['logstash']['instance_name']}]", :delayed
+  # notifies :restart, "logstash_service[#{node['mconf-stats']['logstash']['instance_name']}]", :delayed
 end
 
 # Remove old configs we didn't create, including a few defaults created by elkstack

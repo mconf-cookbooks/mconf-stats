@@ -6,6 +6,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Elkstack general configs
 override['elkstack']['config']['logstash']['instance_name'] = node['mconf-stats']['logstash']['instance_name']
 override['elkstack']['config']['backups']['enabled']        = node['mconf-stats']['backups']['enabled']
 override['elkstack']['config']['backups']['cron']           = node['mconf-stats']['backups']['cron']
@@ -14,6 +15,10 @@ override['elkstack']['config']['kibana']['redirect']        = node['mconf-stats'
 
 override['elkstack']['config']['custom_logstash'] = {}
 override['elkstack']['config']['custom_logstash']['name'] = []
+
+# Temporarily disabled until properly configured
+default['elkstack']['config']['cloud_monitoring']['enabled'] = false
+default['elkstack']['config']['iptables']['enabled']         = false
 
 # Logstash
 logstash_instance = node['elkstack']['config']['logstash']['instance_name']
@@ -25,17 +30,14 @@ override['logstash']['instance'][logstash_instance]['checksum']      = node['mco
 override['logstash']['instance'][logstash_instance]['xms']           = node['mconf-stats']['logstash']['xms']
 override['logstash']['instance'][logstash_instance]['xmx']           = node['mconf-stats']['logstash']['xmx']
 
-# override['elasticsearch']['allocated_memory'] = node['mconf-stats']['elasticsearch']['allocated_memory']
-# override['elasticsearch']['version'] = node['mconf-stats']['elasticsearch']['version']
 
-# elastic_dir = "elasticsearch-#{node['elasticsearch']['version']}"
-# override['elasticsearch']['dir']          = '/opt'
-# override['elasticsearch']['bindir']       = "/opt/#{elastic_dir}/bin"
-# override['elasticsearch']['path']['conf'] = "/opt/#{elastic_dir}/etc"
-# override['elasticsearch']['path']['data'] = "/opt/#{elastic_dir}/var/data"
-# override['elasticsearch']['path']['logs'] = "/opt/#{elastic_dir}/var/logs"
-# override['elasticsearch']['pid_path']     = "/opt/#{elastic_dir}/var/run"
-# override['elasticsearch']['host']         = "https://download.elastic.co"
+# ElasticSearch
+override['elasticsearch']['version']          = node['mconf-stats']['elasticsearch']['version']
+override['elasticsearch']['allocated_memory'] = node['mconf-stats']['elasticsearch']['allocated_memory']
+override['elasticsearch']['cluster']['name']  = node['mconf-stats']['elasticsearch']['cluster']['name']
+override['elasticsearch']['plugins']          = {}
+override['elasticsearch']['host']             = "https://download.elastic.co"
+override['elasticsearch']['network']['host']  = node['mconf-stats']['domain']
 
 # # To prevent an error in the elasticsearch cookbook
 # override['elasticsearch']['nginx']['ssl'] = {}

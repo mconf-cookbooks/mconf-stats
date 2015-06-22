@@ -10,5 +10,5 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-include_recipe 'elasticsearch'
-include_recipe 'elasticsearch::proxy'
+include_recipe 'elkstack::elasticsearch'
+# include_recipe 'elasticsearch::proxy'

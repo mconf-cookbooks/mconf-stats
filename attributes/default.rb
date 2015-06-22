@@ -6,11 +6,20 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Notes about paths:
+# * Logstash
+#   path: /opt
+#   log: /opt/logstash/mconf/log/logstash.log
+#   init: /etc/sv/logstash_mconf/run
+# * ElasticSearch
+#   path: /usr/local/
+#   logs: /usr/local/var/log/elasticsearch
+#   init: /etc/init.d/elasticsearch
+
 # User and group on the server the application is being deployed
 default['mconf-stats']['user'] = 'mconf'
 default['mconf-stats']['app_group'] = 'www-data'
 default['mconf-stats']['domain'] = '192.168.0.100'
-
 default['mconf-stats']['java_pkg'] = 'openjdk-7-jre-headless'
 
 # General configurations passed to elkstask
@@ -59,7 +68,7 @@ default['mconf-stats']['logstash']['inputs'] = []
 default['mconf-stats']['logstash']['outputs']['elasticsearch'] = []
 
 
-# # Elastic Search
-# default['mconf-stats']['elasticsearch']['version'] = "1.6.0"
-# default['mconf-stats']['elasticsearch']['cluster']['name'] = "mconf_cluster"
-# default['mconf-stats']['elasticsearch']['allocated_memory'] = "2048m"
+# Elastic Search
+default['mconf-stats']['elasticsearch']['version'] = "1.6.0"
+default['mconf-stats']['elasticsearch']['cluster']['name'] = "mconf_cluster"
+default['mconf-stats']['elasticsearch']['allocated_memory'] = "2048m"

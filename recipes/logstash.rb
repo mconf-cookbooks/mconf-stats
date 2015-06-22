@@ -10,83 +10,51 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-logstash_name = 'mconf'
-logstash_service_name = "logstash_#{logstash_name}"
-logstash_home = "#{node['logstash']['instance_default']['basedir']}/#{logstash_name}"
-logstash_conf_dir = "#{logstash_home}/etc/conf.d"
-
-logstash_instance logstash_name do
-  create_account true
-  action         :create
-end
-
-
-args      = ['agent', '-f', logstash_conf_dir]
-args.concat ['-l', "#{logstash_home}/log/#{node['logstash']['instance_default']['log_file']}"]
-args.concat ['-w', node['logstash']['instance_default']['workers'].to_s]
-args.concat ['-vv'] if node['logstash']['instance_default']['debug']
-template "/etc/init/#{logstash_service_name}.conf" do
-  mode      '0644'
-  source    "upstart/logstash.erb"
-  variables(
-    nofile_soft: node['logstash']['instance_default']['limit_nofile_soft'],
-    nofile_hard: node['logstash']['instance_default']['limit_nofile_hard'],
-    home: logstash_home,
-    user: node['logstash']['instance_default']['user'],
-    supervisor_gid: node['logstash']['instance_default']['supervisor_gid'],
-    max_heap: node['logstash']['instance_default']['xmx'],
-    min_heap: node['logstash']['instance_default']['xms'],
-    args: args,
-    gc_opts: node['logstash']['instance_default']['gc_opts'],
-    java_opts: node['logstash']['instance_default']['java_opts'],
-    ipv4_only: node['logstash']['instance_default']['ipv4_only']
-  )
-  notifies :restart, "service[#{logstash_service_name}]", :delayed
-end
-
-service logstash_service_name do
-  provider Chef::Provider::Service::Upstart
-  supports restart: true, reload: true, status: false
-  action [:enable, :start]
-end
-
-
-configs_created= []
-
+# Map the config files set in this cookbook to the ones expected by elkstack
 node['mconf-stats']['logstash']['inputs'].each do |config|
-  tmpl = template "#{logstash_conf_dir}/#{config[:name]}" do
-    source 'logstash/input_file.conf.erb'
-    owner       node['logstash']['instance_default']['user']
-    group       node['logstash']['instance_default']['group']
-    mode        '0644'
-    variables   config
-    action      :create
-    notifies    :restart, "service[#{logstash_service_name}]"
-  end
-  configs_created << tmpl.name
+  node.override['elkstack']['config']['custom_logstash']['name'] += ["input-#{config['name']}"]
+  base = node.override['elkstack']['config']['custom_logstash']["input-#{config['name']}"]
+  base['name'] = config['name']
+  base['source'] = 'logstash/input_file.conf.erb'
+  base['cookbook'] = 'mconf-stats'
+  base['variables'] = config
 end
-
 node['mconf-stats']['logstash']['outputs']['elasticsearch'].each do |config|
-  tmpl = template "#{logstash_conf_dir}/#{config[:name]}" do
-    source 'logstash/output_elasticsearch.conf.erb'
-    owner       node['logstash']['instance_default']['user']
-    group       node['logstash']['instance_default']['group']
-    mode        '0644'
-    variables   config
-    action      :create
-    notifies    :restart, "service[#{logstash_service_name}]"
-  end
-  configs_created << tmpl.name
+  node.override['elkstack']['config']['custom_logstash']['name'] += ["output-es-#{config['name']}"]
+  base = node.override['elkstack']['config']['custom_logstash']["output-es-#{config['name']}"]
+  base['name'] = config['name']
+  base['source'] = 'logstash/output_elasticsearch.conf.erb'
+  base['cookbook'] = 'mconf-stats'
+  base['variables'] = config
 end
 
-# Remove old configs we didn't create
-Dir["#{logstash_conf_dir}/*.conf"].each do |path|
-  file path do
-    action :delete
-    not_if { configs_created.include?(path) }
+include_recipe 'elkstack::logstash'
+
+# TODO: Temporarily removing the --pluginpath option until the cookbook logstash is
+# fixed for logstash >= 1.5, see: https://github.com/lusis/chef-logstash/pull/413
+ruby_block "remove pluginpath option" do
+  block do
+    rc = Chef::Util::FileEdit.new(node['mconf-stats']['logstash']['sv_run_file'])
+    rc.search_file_delete_line(/.*--pluginpath.*/)
+    rc.write_file
   end
+  only_if { Gem::Version.new(node['mconf-stats']['logstash']['version']) >= Gem::Version.new('1.5.0') }
+  notifies :restart, "logstash_service[#{node['mconf-stats']['logstash']['instance_name']}]", :delayed
 end
 
-# logstash_pattern name do
-#   action [:create]
-# end
+# Remove old configs we didn't create, including a few defaults created by elkstack
+ruby_block 'remove unused logstash configs' do
+  block do
+    configs_created = node['elkstack']['config']['custom_logstash']['name'].map{ |c|
+      "#{node['mconf-stats']['logstash']['confdir']}/#{node['elkstack']['config']['custom_logstash'][c]['name']}"
+    }
+    Dir["#{node['mconf-stats']['logstash']['confdir']}/*"].each do |path|
+      unless configs_created.include?(path)
+        r = Chef::Resource::File.new(path, run_context)
+        r.path       path
+        r.run_action :delete
+      end
+    end
+  end
+  action :run
+end

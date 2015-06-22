@@ -34,6 +34,18 @@ end
 
 include_recipe 'elkstack::logstash'
 
+# TODO: Temporarily removing the --pluginpath option until the cookbook logstash is
+# fixed for logstash >= 1.5, see: https://github.com/lusis/chef-logstash/pull/413
+ruby_block "remove pluginpath option" do
+  block do
+    rc = Chef::Util::FileEdit.new(node['mconf-stats']['logstash']['sv_run_file'])
+    rc.search_file_delete_line(/.*--pluginpath.*/)
+    rc.write_file
+  end
+  only_if { Gem::Version.new(node['mconf-stats']['logstash']['version']) >= Gem::Version.new('1.5.0') }
+  notifies :restart, "logstash_service[#{node['mconf-stats']['logstash']['instance_name']}]", :delayed
+end
+
 # Remove old configs we didn't create, including a few defaults created by elkstack
 ruby_block 'remove unused logstash configs' do
   block do

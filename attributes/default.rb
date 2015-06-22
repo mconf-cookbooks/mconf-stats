@@ -30,8 +30,9 @@ default['mconf-stats']['logstash']['xms']           = '1536M'
 default['mconf-stats']['logstash']['xmx']           = '1536M'
 
 # These are not really set on elkstack/logstash, so set them here as shortcuts for when we need them
-default['mconf-stats']['logstash']['basedir'] = "#{node['logstash']['instance_default']['basedir']}/#{default['mconf-stats']['logstash']['instance_name']}"
-default['mconf-stats']['logstash']['confdir'] = "#{node['mconf-stats']['logstash']['basedir']}/etc/conf.d"
+default['mconf-stats']['logstash']['basedir']     = "#{node['logstash']['instance_default']['basedir']}/#{default['mconf-stats']['logstash']['instance_name']}"
+default['mconf-stats']['logstash']['confdir']     = "#{node['mconf-stats']['logstash']['basedir']}/etc/conf.d"
+default['mconf-stats']['logstash']['sv_run_file'] = "/etc/sv/logstash_#{node['mconf-stats']['logstash']['instance_name']}/run"
 
 # # Example:
 # # [

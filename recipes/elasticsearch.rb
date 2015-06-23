@@ -12,3 +12,5 @@
 
 include_recipe 'elkstack::elasticsearch'
 # include_recipe 'elasticsearch::proxy'
+
+# TODO: Disable multicast

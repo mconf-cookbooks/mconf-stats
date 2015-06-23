@@ -15,6 +15,7 @@ override['elkstack']['config']['kibana']['redirect']        = node['mconf-stats'
 
 override['elkstack']['config']['custom_logstash'] = {}
 override['elkstack']['config']['custom_logstash']['name'] = []
+override['elkstack']['config']['lumberjack_data_bag'] = 'lumberjack'
 
 # Temporarily disabled until properly configured
 default['elkstack']['config']['cloud_monitoring']['enabled'] = false

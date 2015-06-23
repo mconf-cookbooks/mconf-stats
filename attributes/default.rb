@@ -15,6 +15,8 @@
 #   path: /usr/local/
 #   logs: /usr/local/var/log/elasticsearch
 #   init: /etc/init.d/elasticsearch
+#   default http port: 9200
+#   default node port: 9300
 
 # User and group on the server the application is being deployed
 default['mconf-stats']['user'] = 'mconf'
@@ -43,29 +45,43 @@ default['mconf-stats']['logstash']['basedir']     = "#{node['logstash']['instanc
 default['mconf-stats']['logstash']['confdir']     = "#{node['mconf-stats']['logstash']['basedir']}/etc/conf.d"
 default['mconf-stats']['logstash']['sv_run_file'] = "/etc/sv/logstash_#{node['mconf-stats']['logstash']['instance_name']}/run"
 
-# # Example:
-# # [
-# #   {
-# #     name: '0-input-main.conf',
-# #     path: '/my/file/1.log',
-# #     type: 'rails',
-# #     codec: 'json'
-# #   }
-# # ]
-default['mconf-stats']['logstash']['inputs'] = []
+# Example:
+# [
+#   {
+#     name: '0-input-main.conf',
+#     path: '/my/file/1.log',
+#     type: 'rails',
+#     codec: 'json'
+#   }
+# ]
+default['mconf-stats']['logstash']['inputs']['files'] = []
 
-# # Example:
-# # [
-# #   {
-# #     "name": "9-output-elasticsearch.conf",
-# #     "host": "localhost",
-# #     "cluster": "mconf_cluster",
-# #     "embedded": false,
-# #     "bind_host": null,
-# #     "es_index": null
-# #   }
-# # ]
+# Example:
+# [
+#   {
+#     "name": "9-output-elasticsearch.conf",
+#     "host": "localhost",
+#     "cluster": "mconf_cluster",
+#     "embedded": false,
+#     "bind_host": null,
+#     "es_index": null
+#   }
+# ]
 default['mconf-stats']['logstash']['outputs']['elasticsearch'] = []
+
+# Example:
+# {
+#   "name": "9-output-stdout.conf",
+#   "codec": "rubydebug"
+# }
+default['mconf-stats']['logstash']['outputs']['stdout'] = {}
+
+# Lumberjack input for logstash
+default['mconf-stats']['logstash']['inputs']['lumberjack'] = {}
+default['mconf-stats']['logstash']['lumberjack']['port'] = 5960
+default['mconf-stats']['logstash']['lumberjack']['certificate_path'] = '/etc'
+default['mconf-stats']['logstash']['lumberjack']['ssl_certificate'] = "#{node['mconf-stats']['logstash']['lumberjack']['certificate_path']}/lumberjack.crt"
+default['mconf-stats']['logstash']['lumberjack']['ssl_key'] = "#{node['mconf-stats']['logstash']['lumberjack']['certificate_path']}/lumberjack.key"
 
 
 # Elastic Search

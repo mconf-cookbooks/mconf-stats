@@ -11,7 +11,7 @@
 #
 
 # Map the config files set in this cookbook to the ones expected by elkstack
-node['mconf-stats']['logstash']['inputs'].each do |config|
+node['mconf-stats']['logstash']['inputs']['files'].each do |config|
   node.override['elkstack']['config']['custom_logstash']['name'] += ["input-#{config['name']}"]
   base = node.override['elkstack']['config']['custom_logstash']["input-#{config['name']}"]
   base['name'] = config['name']
@@ -19,11 +19,29 @@ node['mconf-stats']['logstash']['inputs'].each do |config|
   base['cookbook'] = 'mconf-stats'
   base['variables'] = config
 end
+unless node['mconf-stats']['logstash']['inputs']['lumberjack'].empty?
+  config = node['mconf-stats']['logstash']['inputs']['lumberjack']
+  node.override['elkstack']['config']['custom_logstash']['name'] += ["input-#{config['name']}"]
+  base = node.override['elkstack']['config']['custom_logstash']["input-#{config['name']}"]
+  base['name'] = config['name']
+  base['source'] = 'logstash/input_lumberjack.conf.erb'
+  base['cookbook'] = 'elkstack' # we use elkstack's default lumberjack template
+  base['variables'] = config
+end
 node['mconf-stats']['logstash']['outputs']['elasticsearch'].each do |config|
   node.override['elkstack']['config']['custom_logstash']['name'] += ["output-es-#{config['name']}"]
   base = node.override['elkstack']['config']['custom_logstash']["output-es-#{config['name']}"]
   base['name'] = config['name']
   base['source'] = 'logstash/output_elasticsearch.conf.erb'
+  base['cookbook'] = 'mconf-stats'
+  base['variables'] = config
+end
+unless node['mconf-stats']['logstash']['outputs']['stdout'].empty?
+  config = node['mconf-stats']['logstash']['outputs']['stdout']
+  node.override['elkstack']['config']['custom_logstash']['name'] += ["output-stdout-#{config['name']}"]
+  base = node.override['elkstack']['config']['custom_logstash']["output-stdout-#{config['name']}"]
+  base['name'] = config['name']
+  base['source'] = 'logstash/output_stdout.conf.erb'
   base['cookbook'] = 'mconf-stats'
   base['variables'] = config
 end
@@ -39,7 +57,7 @@ ruby_block "remove pluginpath option" do
     rc.write_file
   end
   only_if { Gem::Version.new(node['mconf-stats']['logstash']['version']) >= Gem::Version.new('1.5.0') }
-  # notifies :restart, "logstash_service[#{node['mconf-stats']['logstash']['instance_name']}]", :delayed
+  notifies :restart, "logstash_service[#{node['mconf-stats']['logstash']['instance_name']}]", :delayed
 end
 
 # Remove old configs we didn't create, including a few defaults created by elkstack
@@ -57,4 +75,9 @@ ruby_block 'remove unused logstash configs' do
     end
   end
   action :run
+end
+
+# Start it otherwise automatic restarts will fail because it's not running yet
+logstash_service 'mconf' do
+  action :start
 end

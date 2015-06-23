@@ -31,6 +31,7 @@ override['logstash']['instance'][logstash_instance]['ipv4_only']         = node[
 
 override['elasticsearch']['version']          = node['mconf-stats']['elasticsearch']['version']
 override['elasticsearch']['allocated_memory'] = node['mconf-stats']['elasticsearch']['allocated_memory']
+override['elasticsearch']['http']['port']     = node['mconf-stats']['elasticsearch']['http']['port']
 
 # To prevent an error in the elasticsearch cookbook
 override['elasticsearch']['nginx']['ssl'] = {}

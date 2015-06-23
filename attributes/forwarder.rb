@@ -1,11 +1,15 @@
-# TODO: setting the version doesn't do anything
-default['logstash_forwarder']['version'] = '0.4.0'
-default['logstash_forwarder']['config_file'] = '/etc/logstash-forwarder'
-default['logstash_forwarder']['user'] = 'root'
-default['logstash_forwarder']['group'] = 'root'
+#
+# This file is part of the Mconf project.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
 
-# default['logstash_forwarder']['config']['network']['servers'] = []
-# default['logstash_forwarder']['config']['network']['ssl certificate'] = '/etc/lumberjack.crt'
-# default['logstash_forwarder']['config']['network']['ssl key'] = '/etc/lumberjack.key'
-# default['logstash_forwarder']['config']['network']['ssl ca'] = '/etc/lumberjack.crt'
-# default['logstash_forwarder']['config']['network']['timeout'] = 15
+default['mconf-stats']['forwarder']['config_file'] = '/etc/logstash-forwarder'
+default['mconf-stats']['forwarder']['files'] = []
+default['mconf-stats']['forwarder']['network']['servers'] = [ "#{node['mconf-stats']['domain']}:9200" ]
+default['mconf-stats']['forwarder']['network']['ssl_certificate'] = ''
+default['mconf-stats']['forwarder']['network']['ssl_key'] = ''
+default['mconf-stats']['forwarder']['network']['ssl_ca'] = ''
+default['mconf-stats']['forwarder']['network']['timeout'] = 15

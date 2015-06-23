@@ -15,12 +15,25 @@ require 'chef/rewind'
 
 include_recipe "elkstack::forwarder"
 
-# The only way to disable the default files configured by elkstack
+# Rewinding is the only way to disable the default files configured by elkstack
 # TODO: Could simply node.rm('logstash_forwarder', 'config', 'files') in Chef 12, but not
 #   available on 11. See https://github.com/chef/chef-rfc/blob/master/rfc023-chef-12-attributes-changes.md
-require 'json'
-config = node['logstash_forwarder']['config'].to_hash
+config = {}
+config['network'] = {
+  'servers' => node['mconf-stats']['forwarder']['network']['servers'],
+  'ssl certificate' => node['mconf-stats']['forwarder']['network']['ssl_certificate'],
+  'ssl key' => node['mconf-stats']['forwarder']['network']['ssl_key'],
+  'ssl ca' => node['mconf-stats']['forwarder']['network']['ssl_ca'],
+  'timeout' => node['mconf-stats']['forwarder']['network']['timeout']
+}
 config['files'] = []
+
+# Add the files configured by the user
+node['mconf-stats']['forwarder']['files'].each do |file_config|
+  config['files'] << file_config
+end
+
+require 'json'
 rewind "file[#{node['logstash_forwarder']['config_file']}]" do
   content JSON.pretty_generate(config)
 end

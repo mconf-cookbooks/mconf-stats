@@ -72,3 +72,4 @@ default['mconf-stats']['logstash']['outputs']['elasticsearch'] = []
 default['mconf-stats']['elasticsearch']['version'] = "1.6.0"
 default['mconf-stats']['elasticsearch']['cluster']['name'] = "mconf_cluster"
 default['mconf-stats']['elasticsearch']['allocated_memory'] = "2048m"
+default['mconf-stats']['elasticsearch']['http']['port'] = 9200

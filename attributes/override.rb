@@ -38,6 +38,21 @@ override['elasticsearch']['cluster']['name']  = node['mconf-stats']['elasticsear
 override['elasticsearch']['plugins']          = {}
 override['elasticsearch']['host']             = "https://download.elastic.co"
 override['elasticsearch']['network']['host']  = node['mconf-stats']['domain']
+override['elasticsearch']['http']['port']     = node['mconf-stats']['elasticsearch']['http']['port']
 
 # # To prevent an error in the elasticsearch cookbook
 # override['elasticsearch']['nginx']['ssl'] = {}
+
+
+# Forwarder
+
+# TODO: setting the version doesn't do anything
+override['logstash_forwarder']['version']           = '0.4.0'
+override['logstash_forwarder']['config_file']       = node['mconf-stats']['forwarder']['config_file']
+override['logstash_forwarder']['user']              = node['mconf-stats']['user']
+override['logstash_forwarder']['group']             = node['mconf-stats']['app_group']
+override['logstash_forwarder']['config']['network']['servers']         = node['mconf-stats']['forwarder']['network']['servers']
+override['logstash_forwarder']['config']['network']['ssl certificate'] = node['mconf-stats']['forwarder']['ssl_certificate']
+override['logstash_forwarder']['config']['network']['ssl key']         = node['mconf-stats']['forwarder']['ssl_key']
+override['logstash_forwarder']['config']['network']['ssl ca']          = node['mconf-stats']['forwarder']['ssl_ca']
+override['logstash_forwarder']['config']['network']['timeout']         = node['mconf-stats']['forwarder']['timeout']

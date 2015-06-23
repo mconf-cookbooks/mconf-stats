@@ -14,7 +14,7 @@ default['mconf-stats']['domain'] = '192.168.0.100'
 default['mconf-stats']['java_pkg'] = 'openjdk-7-jre-headless'
 
 # Logstash
-default['mconf-stats']['logstash']['basedir']       = '/opt'
+default['mconf-stats']['logstash']['basedir']       = '/opt/logstash'
 default['mconf-stats']['logstash']['instance_name'] = 'mconf'
 default['mconf-stats']['logstash']['debug']         = false
 default['mconf-stats']['logstash']['install_type']  = 'tarball'
@@ -28,13 +28,13 @@ default['mconf-stats']['logstash']['log_file']      = 'logstash.log'
 # Example:
 # [
 #   {
-#     name: '0-input-main.conf',
-#     path: '/my/file/1.log',
-#     type: 'rails',
-#     codec: 'json'
+#     "name": "0-input-main.conf",
+#     "path": "/my/file/1.log",
+#     "type": "rails",
+#     "codec": "json"
 #   }
 # ]
-default['mconf-stats']['logstash']['inputs'] = []
+default['mconf-stats']['logstash']['inputs']['files'] = []
 
 # Example:
 # [
@@ -55,6 +55,19 @@ default['mconf-stats']['logstash']['outputs']['elasticsearch'] = []
 #   "codec": "rubydebug"
 # }
 default['mconf-stats']['logstash']['outputs']['stdout'] = {}
+
+# Lumberjack input
+# Certificates are taken from the data bag and saved to disk in the paths specified below
+default['mconf-stats']['logstash']['inputs']['lumberjack']                     = {}
+default['mconf-stats']['logstash']['inputs']['lumberjack']['name']             = nil
+default['mconf-stats']['logstash']['inputs']['lumberjack']['host']             = '0.0.0.0'
+default['mconf-stats']['logstash']['inputs']['lumberjack']['port']             = 5960
+default['mconf-stats']['logstash']['inputs']['lumberjack']['data_bag']         = 'lumberjack'
+default['mconf-stats']['logstash']['inputs']['lumberjack']['data_item']        = 'secrets'
+default['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path'] = '/etc'
+default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']  = 'lumberjack.crt'
+default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']          = 'lumberjack.key'
+
 
 # Elastic Search
 default['mconf-stats']['elasticsearch']['version'] = "1.6.0"

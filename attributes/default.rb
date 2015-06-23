@@ -43,6 +43,12 @@ default['mconf-stats']['logstash']['inputs'] = []
 # ]
 default['mconf-stats']['logstash']['outputs']['elasticsearch'] = []
 
+# Example:
+# {
+#   "name": "9-output-stdout.conf",
+#   "codec": "rubydebug"
+# }
+default['mconf-stats']['logstash']['outputs']['stdout'] = {}
 
 # Elastic Search
 default['mconf-stats']['elasticsearch']['version'] = "1.6.0"

@@ -55,32 +55,46 @@ configs_created= []
 
 node['mconf-stats']['logstash']['inputs'].each do |config|
   tmpl = template "#{logstash_conf_dir}/#{config[:name]}" do
-    source 'logstash/input_file.conf.erb'
-    owner       node['logstash']['instance_default']['user']
-    group       node['logstash']['instance_default']['group']
-    mode        '0644'
-    variables   config
-    action      :create
-    notifies    :restart, "service[#{logstash_service_name}]"
+    source    'logstash/input_file.conf.erb'
+    owner     node['logstash']['instance_default']['user']
+    group     node['logstash']['instance_default']['group']
+    mode      '0644'
+    variables config
+    action    :create
+    notifies  :restart, "service[#{logstash_service_name}]", :delayed
   end
   configs_created << tmpl.name
 end
 
 node['mconf-stats']['logstash']['outputs']['elasticsearch'].each do |config|
   tmpl = template "#{logstash_conf_dir}/#{config[:name]}" do
-    source 'logstash/output_elasticsearch.conf.erb'
-    owner       node['logstash']['instance_default']['user']
-    group       node['logstash']['instance_default']['group']
-    mode        '0644'
-    variables   config
-    action      :create
-    notifies    :restart, "service[#{logstash_service_name}]"
+    source    'logstash/output_elasticsearch.conf.erb'
+    owner     node['logstash']['instance_default']['user']
+    group     node['logstash']['instance_default']['group']
+    mode      '0644'
+    variables config
+    action    :create
+    notifies  :restart, "service[#{logstash_service_name}]", :delayed
+  end
+  configs_created << tmpl.name
+end
+
+unless node['mconf-stats']['logstash']['outputs']['stdout'].empty?
+  config = node['mconf-stats']['logstash']['outputs']['stdout']
+  tmpl = template "#{logstash_conf_dir}/#{config[:name]}" do
+    source    'logstash/output_stdout.conf.erb'
+    owner     node['logstash']['instance_default']['user']
+    group     node['logstash']['instance_default']['group']
+    mode      '0644'
+    variables config
+    action    :create
+    notifies  :restart, "service[#{logstash_service_name}]", :delayed
   end
   configs_created << tmpl.name
 end
 
 # Remove old configs we didn't create
-Dir["#{logstash_conf_dir}/*.conf"].each do |path|
+Dir["#{logstash_conf_dir}/*"].each do |path|
   file path do
     action :delete
     not_if { configs_created.include?(path) }

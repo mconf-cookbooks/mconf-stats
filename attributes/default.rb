@@ -14,10 +14,16 @@ default['mconf-stats']['domain'] = '192.168.0.100'
 default['mconf-stats']['java_pkg'] = 'openjdk-7-jre-headless'
 
 # Logstash
-default['logstash']['instance_default']['install_type']  = 'tarball'
-default['logstash']['instance_default']['version']       = '1.5.1'
-default['logstash']['instance_default']['source_url']    = 'https://download.elasticsearch.org/logstash/logstash/logstash-1.5.1.tar.gz'
-default['logstash']['instance_default']['checksum']      = 'a12f91bc87f6cd8f1b481c9e9d0370a650b2c36fdc6a656785ef883cb1002894' # sha256sum logstash-1.5.1.tar.gz
+default['mconf-stats']['logstash']['basedir']       = '/opt'
+default['mconf-stats']['logstash']['instance_name'] = 'mconf'
+default['mconf-stats']['logstash']['debug']         = false
+default['mconf-stats']['logstash']['install_type']  = 'tarball'
+default['mconf-stats']['logstash']['version']       = '1.5.1'
+default['mconf-stats']['logstash']['source_url']    = 'https://download.elasticsearch.org/logstash/logstash/logstash-1.5.1.tar.gz'
+default['mconf-stats']['logstash']['checksum']      = 'a12f91bc87f6cd8f1b481c9e9d0370a650b2c36fdc6a656785ef883cb1002894' # sha256sum logstash-1.5.1.tar.gz
+default['mconf-stats']['logstash']['xms']           = '1536M'
+default['mconf-stats']['logstash']['xmx']           = '1536M'
+default['mconf-stats']['logstash']['log_file']      = 'logstash.log'
 
 # Example:
 # [

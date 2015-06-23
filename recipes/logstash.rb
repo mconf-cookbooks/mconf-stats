@@ -10,91 +10,91 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-logstash_name = 'mconf'
-logstash_service_name = "logstash_#{logstash_name}"
-logstash_home = "#{node['logstash']['instance_default']['basedir']}/#{logstash_name}"
-logstash_conf_dir = "#{logstash_home}/etc/conf.d"
+instance_name = node['mconf-stats']['logstash']['instance_name']
+service_name = "logstash_#{instance_name}"
+home = "#{node['mconf-stats']['logstash']['basedir']}/#{instance_name}"
+conf_dir = "#{home}/etc/conf.d"
+instance_configs = node['logstash']['instance'][instance_name]
 
-logstash_instance logstash_name do
+logstash_instance instance_name do
   create_account true
   action         :create
 end
 
-
-args      = ['agent', '-f', logstash_conf_dir]
-args.concat ['-l', "#{logstash_home}/log/#{node['logstash']['instance_default']['log_file']}"]
-args.concat ['-w', node['logstash']['instance_default']['workers'].to_s]
-args.concat ['-vv'] if node['logstash']['instance_default']['debug']
-template "/etc/init/#{logstash_service_name}.conf" do
+args      = ['agent', '-f', conf_dir]
+args.concat ['-l', "#{home}/log/#{instance_configs['log_file']}"]
+args.concat ['-w', instance_configs['workers'].to_s]
+args.concat ['-vv'] if instance_configs['debug']
+template "/etc/init/#{service_name}.conf" do
   mode      '0644'
   source    "upstart/logstash.erb"
   variables(
-    nofile_soft: node['logstash']['instance_default']['limit_nofile_soft'],
-    nofile_hard: node['logstash']['instance_default']['limit_nofile_hard'],
-    home: logstash_home,
-    user: node['logstash']['instance_default']['user'],
-    supervisor_gid: node['logstash']['instance_default']['supervisor_gid'],
-    max_heap: node['logstash']['instance_default']['xmx'],
-    min_heap: node['logstash']['instance_default']['xms'],
+    nofile_soft: instance_configs['limit_nofile_soft'],
+    nofile_hard: instance_configs['limit_nofile_hard'],
+    home: home,
+    user: instance_configs['user'],
+    supervisor_gid: instance_configs['supervisor_gid'],
+    max_heap: instance_configs['xmx'],
+    min_heap: instance_configs['xms'],
     args: args,
-    gc_opts: node['logstash']['instance_default']['gc_opts'],
-    java_opts: node['logstash']['instance_default']['java_opts'],
-    ipv4_only: node['logstash']['instance_default']['ipv4_only']
+    gc_opts: instance_configs['gc_opts'],
+    java_opts: instance_configs['java_opts'],
+    ipv4_only: instance_configs['ipv4_only']
   )
-  notifies :restart, "service[#{logstash_service_name}]", :delayed
+  notifies :restart, "service[#{service_name}]", :delayed
 end
 
-service logstash_service_name do
+service service_name do
   provider Chef::Provider::Service::Upstart
   supports restart: true, reload: true, status: false
   action [:enable, :start]
 end
 
 
-configs_created= []
+configs_created = []
 
 node['mconf-stats']['logstash']['inputs'].each do |config|
-  tmpl = template "#{logstash_conf_dir}/#{config[:name]}" do
+  tmpl = template "#{conf_dir}/#{config[:name]}" do
     source    'logstash/input_file.conf.erb'
-    owner     node['logstash']['instance_default']['user']
-    group     node['logstash']['instance_default']['group']
+    owner     instance_configs['user']
+    group     instance_configs['group']
     mode      '0644'
     variables config
     action    :create
-    notifies  :restart, "service[#{logstash_service_name}]", :delayed
+    notifies  :restart, "service[#{service_name}]", :delayed
   end
   configs_created << tmpl.name
 end
 
 node['mconf-stats']['logstash']['outputs']['elasticsearch'].each do |config|
-  tmpl = template "#{logstash_conf_dir}/#{config[:name]}" do
+  tmpl = template "#{conf_dir}/#{config[:name]}" do
     source    'logstash/output_elasticsearch.conf.erb'
-    owner     node['logstash']['instance_default']['user']
-    group     node['logstash']['instance_default']['group']
+    owner     instance_configs['user']
+    group     instance_configs['group']
     mode      '0644'
     variables config
     action    :create
-    notifies  :restart, "service[#{logstash_service_name}]", :delayed
+    notifies  :restart, "service[#{service_name}]", :delayed
   end
   configs_created << tmpl.name
 end
 
 unless node['mconf-stats']['logstash']['outputs']['stdout'].empty?
   config = node['mconf-stats']['logstash']['outputs']['stdout']
-  tmpl = template "#{logstash_conf_dir}/#{config[:name]}" do
+  tmpl = template "#{conf_dir}/#{config[:name]}" do
     source    'logstash/output_stdout.conf.erb'
-    owner     node['logstash']['instance_default']['user']
-    group     node['logstash']['instance_default']['group']
+    owner     instance_configs['user']
+    group     instance_configs['group']
     mode      '0644'
     variables config
     action    :create
-    notifies  :restart, "service[#{logstash_service_name}]", :delayed
+    notifies  :restart, "service[#{service_name}]", :delayed
   end
   configs_created << tmpl.name
 end
 
 # Remove old configs we didn't create
-Dir["#{logstash_conf_dir}/*"].each do |path|
+Dir["#{conf_dir}/*"].each do |path|
   file path do
     action :delete
     not_if { configs_created.include?(path) }

@@ -6,16 +6,32 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Notes about the applications installed:
+#
+# * Logstash
+#   path: /opt
+#   log: /opt/logstash/mconf/log/logstash.log
+#   init: /etc/sv/logstash_mconf/run
+#   default port for lumberjack: 5960
+#
+# * ElasticSearch
+#   path: /usr/local/
+#   logs: /usr/local/var/log/elasticsearch
+#   init: /etc/init.d/elasticsearch
+#   default http port: 9200
+#   default node port: 9300
+
 # User and group on the server the application is being deployed
 default['mconf-stats']['user'] = 'mconf'
 default['mconf-stats']['app_group'] = 'www-data'
 default['mconf-stats']['domain'] = '192.168.0.100'
-
 default['mconf-stats']['java_pkg'] = 'openjdk-7-jre-headless'
 
 # Logstash
 default['mconf-stats']['logstash']['basedir']       = '/opt/logstash'
 default['mconf-stats']['logstash']['instance_name'] = 'mconf'
+default['mconf-stats']['logstash']['instance_home'] = "#{node['mconf-stats']['logstash']['basedir']}/#{node['mconf-stats']['logstash']['instance_name']}"
+default['mconf-stats']['logstash']['instance_conf'] = "#{node['mconf-stats']['logstash']['instance_home']}/etc/conf.d"
 default['mconf-stats']['logstash']['debug']         = false
 default['mconf-stats']['logstash']['install_type']  = 'tarball'
 default['mconf-stats']['logstash']['version']       = '1.5.1'
@@ -64,7 +80,7 @@ default['mconf-stats']['logstash']['inputs']['lumberjack']['host']             =
 default['mconf-stats']['logstash']['inputs']['lumberjack']['port']             = 5960
 default['mconf-stats']['logstash']['inputs']['lumberjack']['data_bag']         = 'lumberjack'
 default['mconf-stats']['logstash']['inputs']['lumberjack']['data_item']        = 'secrets'
-default['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path'] = '/etc'
+default['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path'] = "#{default['mconf-stats']['logstash']['instance_home']}/certs"
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']  = 'lumberjack.crt'
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']          = 'lumberjack.key'
 

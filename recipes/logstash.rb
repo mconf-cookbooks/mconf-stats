@@ -13,8 +13,8 @@
 instance_name = node['mconf-stats']['logstash']['instance_name']
 instance_configs = node['logstash']['instance'][instance_name]
 service_name = "logstash_#{instance_name}"
-home = "#{instance_configs['basedir']}/#{instance_name}"
-conf_dir = "#{home}/etc/conf.d"
+home = node['mconf-stats']['logstash']['instance_home']
+conf_dir = node['mconf-stats']['logstash']['instance_conf']
 
 logstash_instance instance_name do
   create_account true
@@ -66,6 +66,8 @@ node['mconf-stats']['logstash']['inputs']['files'].each do |config|
 end
 
 unless node['mconf-stats']['logstash']['inputs']['lumberjack']['name'].nil?
+  include_recipe "mconf-stats::_lumberjack_certificates"
+
   vars = node['mconf-stats']['logstash']['inputs']['lumberjack'].to_hash
   vars['ssl_certificate'] = "#{vars['certificate_path']}/#{vars['ssl_certificate']}"
   vars['ssl_key'] = "#{vars['certificate_path']}/#{vars['ssl_key']}"

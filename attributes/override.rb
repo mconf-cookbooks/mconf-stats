@@ -7,9 +7,9 @@
 #
 
 logstash_instance = node['mconf-stats']['logstash']['instance_name']
-override['logstash']['instance'][logstash_instance]['user']           = node['mconf-stats']['user']
-override['logstash']['instance'][logstash_instance]['group']          = node['mconf-stats']['app_group']
-override['logstash']['instance'][logstash_instance]['supervisor_gid'] = node['mconf-stats']['app_group']
+override['logstash']['instance'][logstash_instance]['user']           = node['mconf-stats']['logstash']['user']
+override['logstash']['instance'][logstash_instance]['group']          = node['mconf-stats']['logstash']['group']
+override['logstash']['instance'][logstash_instance]['supervisor_gid'] = node['mconf-stats']['logstash']['group']
 override['logstash']['instance'][logstash_instance]['debug']          = node['mconf-stats']['logstash']['debug']
 override['logstash']['instance'][logstash_instance]['install_type']   = node['mconf-stats']['logstash']['install_type']
 override['logstash']['instance'][logstash_instance]['version']        = node['mconf-stats']['logstash']['version']
@@ -31,6 +31,7 @@ override['logstash']['instance'][logstash_instance]['ipv4_only']         = node[
 override['elasticsearch']['version']          = node['mconf-stats']['elasticsearch']['version']
 override['elasticsearch']['allocated_memory'] = node['mconf-stats']['elasticsearch']['allocated_memory']
 override['elasticsearch']['http']['port']     = node['mconf-stats']['elasticsearch']['http']['port']
+override['elasticsearch']['user']             = node['mconf-stats']['elasticsearch']['user']
 
 # To prevent an error in the elasticsearch cookbook
 override['elasticsearch']['nginx']['ssl'] = {}

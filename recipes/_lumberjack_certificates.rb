@@ -21,8 +21,8 @@ bag_name = node['mconf-stats']['logstash']['inputs']['lumberjack']['data_bag']
 bag_item = node['mconf-stats']['logstash']['inputs']['lumberjack']['data_item']
 
 directory path do
-  owner node['mconf-stats']['user']
-  group node['mconf-stats']['app_group']
+  owner node['mconf-stats']['logstash']['user']
+  group node['mconf-stats']['logstash']['group']
   mode '0755'
   recursive true
   action :create
@@ -53,16 +53,16 @@ end
 
 file key_path do
   content node.run_state['lumberjack_decoded_key']
-  owner node['mconf-stats']['user']
-  group node['mconf-stats']['app_group']
+  owner node['mconf-stats']['logstash']['user']
+  group node['mconf-stats']['logstash']['group']
   mode '0600'
   not_if { node.run_state['lumberjack_decoded_key'].nil? }
 end
 
 file certificate_path do
   content node.run_state['lumberjack_decoded_certificate']
-  owner node['mconf-stats']['user']
-  group node['mconf-stats']['app_group']
+  owner node['mconf-stats']['logstash']['user']
+  group node['mconf-stats']['logstash']['group']
   mode '0600'
   not_if { node.run_state['lumberjack_decoded_certificate'].nil? }
 end

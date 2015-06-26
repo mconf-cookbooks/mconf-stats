@@ -93,3 +93,21 @@ default['mconf-stats']['elasticsearch']['cluster']['name']  = "mconf_cluster"
 default['mconf-stats']['elasticsearch']['allocated_memory'] = "2048m"
 default['mconf-stats']['elasticsearch']['http']['port']     = 9200
 default['mconf-stats']['elasticsearch']['user']             = 'elasticsearch'
+
+
+# Logstash-forwarder
+default['mconf-stats']['logstash-forwarder']['service_name']     = 'logstash-forwarder'
+default['mconf-stats']['logstash-forwarder']['logstash_servers'] = []
+default['mconf-stats']['logstash-forwarder']['timeout']          = 15
+default['mconf-stats']['logstash-forwarder']['config_path']      = '/etc/logstash-forwarder.conf'
+default['mconf-stats']['logstash-forwarder']['version']          = '0.4.0'
+
+# Example:
+# [
+#   {
+#     "name": "nginx",
+#     "paths": ["/var/log/nginx/access.log", "/var/log/nginx/error.log"],
+#     "fields": { "types": "nginx" }
+#   }
+# ]
+default['mconf-stats']['logstash-forwarder']['logs'] = []

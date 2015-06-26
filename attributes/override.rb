@@ -35,3 +35,11 @@ override['elasticsearch']['user']             = node['mconf-stats']['elasticsear
 
 # To prevent an error in the elasticsearch cookbook
 override['elasticsearch']['nginx']['ssl'] = {}
+
+
+# Logstash-forwarder
+default['logstash-forwarder']['service_name']     = node['mconf-stats']['logstash-forwarder']['service_name']
+default['logstash-forwarder']['logstash_servers'] = node['mconf-stats']['logstash-forwarder']['logstash_servers']
+default['logstash-forwarder']['timeout']          = node['mconf-stats']['logstash-forwarder']['timeout']
+default['logstash-forwarder']['config_path']      = node['mconf-stats']['logstash-forwarder']['config_path']
+default['logstash-forwarder']['version']          = node['mconf-stats']['logstash-forwarder']['version']

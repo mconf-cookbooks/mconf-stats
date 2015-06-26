@@ -11,18 +11,30 @@
 #
 
 # for when installing logstash server with a lumberjack input
-path = node['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path']
-certificate_source = node['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']
-certificate_path = "#{path}/#{certificate_source}"
-key_source = node['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']
-key_path = "#{path}/#{key_source}"
+if node.run_state['lumberjack_for'] == :forwarder
+  path = node['mconf-stats']['logstash-forwarder']['certificate_path']
+  certificate_filename = node['mconf-stats']['logstash-forwarder']['ssl_certificate']
+  key_filename = node['mconf-stats']['logstash-forwarder']['ssl_key']
+  bag_name = node['mconf-stats']['logstash-forwarder']['data_bag']
+  bag_item = node['mconf-stats']['logstash-forwarder']['data_item']
+  target_user = 'root'
+  target_group = 'root'
+else
+  path = node['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path']
+  certificate_filename = node['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']
+  key_filename = node['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']
+  bag_name = node['mconf-stats']['logstash']['inputs']['lumberjack']['data_bag']
+  bag_item = node['mconf-stats']['logstash']['inputs']['lumberjack']['data_item']
+  target_user = node['mconf-stats']['logstash']['user']
+  target_group = node['mconf-stats']['logstash']['group']
+end
+certificate_path = "#{path}/#{certificate_filename}"
+key_path = "#{path}/#{key_filename}"
 
-bag_name = node['mconf-stats']['logstash']['inputs']['lumberjack']['data_bag']
-bag_item = node['mconf-stats']['logstash']['inputs']['lumberjack']['data_item']
 
 directory path do
-  owner node['mconf-stats']['logstash']['user']
-  group node['mconf-stats']['logstash']['group']
+  owner target_user
+  group target_group
   mode '0755'
   recursive true
   action :create
@@ -53,16 +65,16 @@ end
 
 file key_path do
   content node.run_state['lumberjack_decoded_key']
-  owner node['mconf-stats']['logstash']['user']
-  group node['mconf-stats']['logstash']['group']
+  owner
+  group target_group
   mode '0600'
   not_if { node.run_state['lumberjack_decoded_key'].nil? }
 end
 
 file certificate_path do
   content node.run_state['lumberjack_decoded_certificate']
-  owner node['mconf-stats']['logstash']['user']
-  group node['mconf-stats']['logstash']['group']
+  owner target_user
+  group target_group
   mode '0600'
   not_if { node.run_state['lumberjack_decoded_certificate'].nil? }
 end

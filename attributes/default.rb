@@ -96,11 +96,17 @@ default['mconf-stats']['elasticsearch']['user']             = 'elasticsearch'
 
 
 # Logstash-forwarder
+# Certificates are taken from the data bag and saved to disk in the paths specified below
 default['mconf-stats']['logstash-forwarder']['service_name']     = 'logstash-forwarder'
 default['mconf-stats']['logstash-forwarder']['logstash_servers'] = []
 default['mconf-stats']['logstash-forwarder']['timeout']          = 15
 default['mconf-stats']['logstash-forwarder']['config_path']      = '/etc/logstash-forwarder.conf'
 default['mconf-stats']['logstash-forwarder']['version']          = '0.4.0'
+default['mconf-stats']['logstash-forwarder']['certificate_path'] = "/opt/logstash-forwarder/certs"
+default['mconf-stats']['logstash-forwarder']['ssl_certificate']  = 'logstash-forwarder.crt'
+default['mconf-stats']['logstash-forwarder']['ssl_key']          = 'logstash-forwarder.key'
+default['mconf-stats']['logstash-forwarder']['data_bag']         = 'logstash-forwarder'
+default['mconf-stats']['logstash-forwarder']['data_item']        = 'secrets'
 
 # Example:
 # [

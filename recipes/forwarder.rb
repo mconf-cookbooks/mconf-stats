@@ -10,6 +10,9 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+node.run_state['lumberjack_for'] = :forwarder
+include_recipe "mconf-stats::_lumberjack_certificates"
+
 include_recipe 'logstash-forwarder'
 
 node['mconf-stats']['logstash-forwarder']['logs'].each do |log|
@@ -18,3 +21,5 @@ node['mconf-stats']['logstash-forwarder']['logs'].each do |log|
     fields log['fields']
   end
 end
+
+# TODO: rewind the config file to use the correct certificates

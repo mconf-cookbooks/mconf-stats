@@ -11,4 +11,4 @@
 #
 
 include_recipe 'elasticsearch'
-include_recipe 'elasticsearch::proxy'
+# include_recipe 'elasticsearch::proxy'

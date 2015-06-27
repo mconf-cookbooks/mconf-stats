@@ -16,5 +16,6 @@ version          "0.0.1"
 depends          'logstash', '~> 0.11.4'
 depends          'elasticsearch', '~> 0.3.13'
 depends          'logstash-forwarder', '~> 0.2.0'
+depends          'hostsfile', '~> 2.4.5'
 
 recipe "mconf-stats::default", "Sets up an instance of Mconf-Stats"

@@ -14,7 +14,7 @@
 if node.run_state['lumberjack_for'] == :forwarder
   path = node['mconf-stats']['logstash-forwarder']['certificate_path']
   certificate_filename = node['mconf-stats']['logstash-forwarder']['ssl_certificate']
-  key_filename = node['mconf-stats']['logstash-forwarder']['ssl_key']
+  key_filename = nil # key is not necessary for the forwarder
   bag_name = node['mconf-stats']['logstash-forwarder']['data_bag']
   bag_item = node['mconf-stats']['logstash-forwarder']['data_item']
   target_user = 'root'
@@ -29,7 +29,7 @@ else
   target_group = node['mconf-stats']['logstash']['group']
 end
 certificate_path = "#{path}/#{certificate_filename}"
-key_path = "#{path}/#{key_filename}"
+key_path = key_filename ? "#{path}/#{key_filename}" : nil
 
 
 directory path do
@@ -52,23 +52,30 @@ rescue
   lumberjack_secrets = nil
 end
 
-if !lumberjack_secrets.nil? && lumberjack_secrets['key'] && lumberjack_secrets['certificate']
-  node.run_state['lumberjack_decoded_key'] = Base64.decode64(lumberjack_secrets['key'])
-  node.run_state['lumberjack_decoded_certificate'] = Base64.decode64(lumberjack_secrets['certificate'])
-elsif !lumberjack_secrets.nil?
-  Chef::Log.warn('Found a data bag for lumberjack secrets, but it was missing \'key\' and \'certificate\' data bag items')
-elsif lumberjack_secrets.nil?
-  Chef::Log.warn('Could not find an encrypted or unencrypted data bag to use as a lumberjack keypair')
+if !lumberjack_secrets.nil?
+  if lumberjack_secrets['key']
+    node.run_state['lumberjack_decoded_key'] = Base64.decode64(lumberjack_secrets['key'])
+  else
+    Chef::Log.warn('Found a data bag for lumberjack secrets, but it was missing the \'key\' item')
+  end
+  if lumberjack_secrets['certificate']
+    node.run_state['lumberjack_decoded_certificate'] = Base64.decode64(lumberjack_secrets['certificate'])
+  else
+    Chef::Log.warn('Found a data bag for lumberjack secrets, but it was missing the \'certificate\' item')
+  end
 else
-  Chef::Log.warn('Unable to complete lumberjack keypair configuration')
+  Chef::Log.warn('Could not find an encrypted or unencrypted data bag to use as a lumberjack keypair')
 end
 
-file key_path do
-  content node.run_state['lumberjack_decoded_key']
-  owner
-  group target_group
-  mode '0600'
-  not_if { node.run_state['lumberjack_decoded_key'].nil? }
+unless key_path.nil?
+  file key_path do
+    content node.run_state['lumberjack_decoded_key']
+    owner target_user
+    group target_group
+    mode '0600'
+    not_if { node.run_state['lumberjack_decoded_key'].nil? }
+    notifies :restart, "service[#{node.run_state['logstash_service']}]", :delayed
+  end
 end
 
 file certificate_path do
@@ -77,4 +84,5 @@ file certificate_path do
   group target_group
   mode '0600'
   not_if { node.run_state['lumberjack_decoded_certificate'].nil? }
+  notifies :restart, "service[#{node.run_state['logstash_service']}]", :delayed
 end

@@ -43,3 +43,4 @@ default['logstash-forwarder']['logstash_servers'] = node['mconf-stats']['logstas
 default['logstash-forwarder']['timeout']          = node['mconf-stats']['logstash-forwarder']['timeout']
 default['logstash-forwarder']['config_path']      = node['mconf-stats']['logstash-forwarder']['config_path']
 default['logstash-forwarder']['version']          = node['mconf-stats']['logstash-forwarder']['version']
+default['logstash-forwarder']['ssl_ca']           = "#{node['mconf-stats']['logstash-forwarder']['certificate_path']}/#{node['mconf-stats']['logstash-forwarder']['ssl_certificate']}"

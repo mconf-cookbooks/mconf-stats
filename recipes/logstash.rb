@@ -66,7 +66,10 @@ node['mconf-stats']['logstash']['inputs']['files'].each do |config|
 end
 
 unless node['mconf-stats']['logstash']['inputs']['lumberjack']['name'].nil?
+
+  # setup the secrets first
   node.run_state['lumberjack_for'] = :logstash
+  node.run_state['logstash_service'] = service_name
   include_recipe "mconf-stats::_lumberjack_certificates"
 
   vars = node['mconf-stats']['logstash']['inputs']['lumberjack'].to_hash

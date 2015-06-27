@@ -11,6 +11,7 @@
 #
 
 node.run_state['lumberjack_for'] = :forwarder
+node.run_state['logstash_service'] = node['mconf-stats']['logstash-forwarder']['service_name']
 include_recipe "mconf-stats::_lumberjack_certificates"
 
 include_recipe 'logstash-forwarder'
@@ -22,4 +23,10 @@ node['mconf-stats']['logstash-forwarder']['logs'].each do |log|
   end
 end
 
-# TODO: rewind the config file to use the correct certificates
+# Mappings in case servers are referenced by IP.
+node['mconf-stats']['logstash-forwarder']['logstash_servers_mappings'].each_pair do |ip, domain|
+  hostsfile_entry ip do
+    hostname  domain
+    unique    true
+  end
+end

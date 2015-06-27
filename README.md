@@ -63,7 +63,7 @@ Configuration example:
 }
 ```
 
-The secrets for lumberjack are expected to be at a data bag `logstash-forwarder/secrets.json` by default.
+The secrets for lumberjack are expected to be at a data bag `lumberjack/secrets.json` by default.
 
 #### mconf-stats::forwarder
 

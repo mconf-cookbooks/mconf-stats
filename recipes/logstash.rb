@@ -108,6 +108,7 @@ my_files.each do |my_config|
     variables my_config['variables']
     templates_cookbook 'mconf-stats'
     action :create
+    notifies :restart, "service[#{service_name}]", :delayed
   end
   configs_created << tmpl.name
 end

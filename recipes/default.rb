@@ -16,3 +16,4 @@ end
 
 include_recipe 'mconf-stats::logstash'
 include_recipe 'mconf-stats::elasticsearch'
+include_recipe 'mconf-stats::kibana'

@@ -48,6 +48,36 @@ override['elasticsearch']['transport']['tcp']['port'] = "9300-9400"
 override['elasticsearch']['nginx']['ssl'] = {}
 
 
+# Kibana
+override['kibana']['version']                = "#{node['mconf-stats']['kibana']['version']}-linux-x64"
+override['kibana']['java_webserver_port']    = node['mconf-stats']['kibana']['port']
+override['kibana']['webserver_port']         = node['mconf-stats']['kibana']['http_port']
+override['kibana']['install_path']           = node['mconf-stats']['kibana']['basedir']
+override['kibana']['user']                   = node['mconf-stats']['kibana']['user']
+override['kibana']['group']                  = node['mconf-stats']['kibana']['group']
+override['kibana']['config']['kibana_index'] = node['mconf-stats']['kibana']['es_index']
+
+override['kibana']['install_type']           = 'file'
+override['kibana']['file']['type']           = 'tgz'
+override['kibana']['file']['url']            = "https://download.elastic.co/kibana/kibana/kibana-#{node['kibana']['version']}.tar.gz"
+override['kibana']['file']['checksum']       = '597e1b1e381b9a9ed9f8a66e115ec4d7a0258fa36c81fe74f1e91b651fcd567a'
+override['kibana']['file']['config']         = 'config/kibana.yml' # relative path of config file
+override['kibana']['install_java']           = false
+# override['kibana']['file']['config_template']          = 'kibana.yml.erb' # template to use for config
+# override['kibana']['file']['config_template_cookbook'] = 'kibana_lwrp' # cookbook containing config template
+
+override['kibana']['webserver']          = 'nginx' # nginx or apache
+override['kibana']['webserver_scheme']   = 'http://'
+# override['kibana']['webserver_hostname'] = node.name
+# override['kibana']['webserver_aliases']  = [node['ipaddress']]
+# override['kibana']['webserver_listen']   = node['ipaddress']
+
+override['kibana']['es_server']          = '127.0.0.1'
+override['kibana']['es_port']            = node['mconf-stats']['elasticsearch']['http']['port']
+# override['kibana']['es_role']            = 'elasticsearch_server'
+# override['kibana']['es_scheme']          = 'http://'
+
+
 # Logstash-forwarder
 default['logstash-forwarder']['service_name']     = node['mconf-stats']['logstash-forwarder']['service_name']
 default['logstash-forwarder']['logstash_servers'] = node['mconf-stats']['logstash-forwarder']['logstash_servers']

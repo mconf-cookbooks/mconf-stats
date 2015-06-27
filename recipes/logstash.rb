@@ -27,7 +27,7 @@ args.concat ['-w', instance_configs['workers'].to_s]
 args.concat ['-vv'] if instance_configs['debug']
 template "/etc/init/#{service_name}.conf" do
   mode      '0644'
-  source    "upstart/logstash.erb"
+  source    "logstash/upstart.conf.erb"
   variables(
     nofile_soft: instance_configs['limit_nofile_soft'],
     nofile_hard: instance_configs['limit_nofile_hard'],

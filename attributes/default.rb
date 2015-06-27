@@ -94,3 +94,13 @@ default['mconf-stats']['elasticsearch']['cluster']['name']  = "mconf_cluster"
 default['mconf-stats']['elasticsearch']['allocated_memory'] = "2048m"
 default['mconf-stats']['elasticsearch']['http']['port']     = 9200
 default['mconf-stats']['elasticsearch']['user']             = 'elasticsearch'
+
+
+# Kibana
+default['mconf-stats']['kibana']['basedir']   = '/opt'
+default['mconf-stats']['kibana']['version']   = '4.1.0'
+default['mconf-stats']['kibana']['user']      = 'kibana'
+default['mconf-stats']['kibana']['group']     = 'kibana'
+default['mconf-stats']['kibana']['port']      = 5601
+default['mconf-stats']['kibana']['http_port'] = 80
+default['mconf-stats']['kibana']['es_index']  = 'kibana-int'

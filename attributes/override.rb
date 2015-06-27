@@ -32,6 +32,17 @@ override['elasticsearch']['version']          = node['mconf-stats']['elasticsear
 override['elasticsearch']['allocated_memory'] = node['mconf-stats']['elasticsearch']['allocated_memory']
 override['elasticsearch']['http']['port']     = node['mconf-stats']['elasticsearch']['http']['port']
 override['elasticsearch']['user']             = node['mconf-stats']['elasticsearch']['user']
+override['elasticsearch']['cluster']['name']  = node['mconf-stats']['elasticsearch']['cluster']['name']
+
+override['elasticsearch']['discovery']['zen']['ping']['multicast']['enabled'] = false
+override['elasticsearch']['skip_start']               = false
+override['elasticsearch']['skip_restart']             = false
+override['elasticsearch']['transport']['tcp']['port'] = "9300-9400"
+
+# TODO: need an easy way to turn DEBUG mode on
+# override['elasticsearch']['logging']['index.search.slowlog']   = "DEBUG"
+# override['elasticsearch']['logging']['index.indexing.slowlog'] = "DEBUG"
+# override['elasticsearch']['logging']['org.apache.http'] = "INFO"
 
 # To prevent an error in the elasticsearch cookbook
 override['elasticsearch']['nginx']['ssl'] = {}

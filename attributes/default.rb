@@ -17,9 +17,10 @@
 # * ElasticSearch
 #   path: /usr/local/
 #   logs: /usr/local/var/log/elasticsearch
+#   config: /usr/local/etc/elasticsearch/elasticsearch.yml
 #   init: /etc/init.d/elasticsearch
 #   default http port: 9200
-#   default node port: 9300
+#   default node ports: 9300-9400 (gets the first one that's free)
 
 # User and group on the server the application is being deployed
 default['mconf-stats']['user'] = node['mconf']['user']

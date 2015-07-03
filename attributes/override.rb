@@ -79,9 +79,14 @@ override['kibana']['es_port']            = node['mconf-stats']['elasticsearch'][
 
 
 # Logstash-forwarder
-default['logstash-forwarder']['service_name']     = node['mconf-stats']['logstash-forwarder']['service_name']
-default['logstash-forwarder']['logstash_servers'] = node['mconf-stats']['logstash-forwarder']['logstash_servers']
-default['logstash-forwarder']['timeout']          = node['mconf-stats']['logstash-forwarder']['timeout']
-default['logstash-forwarder']['config_path']      = node['mconf-stats']['logstash-forwarder']['config_path']
-default['logstash-forwarder']['version']          = node['mconf-stats']['logstash-forwarder']['version']
-default['logstash-forwarder']['ssl_ca']           = "#{node['mconf-stats']['logstash-forwarder']['certificate_path']}/#{node['mconf-stats']['logstash-forwarder']['ssl_certificate']}"
+override['logstash-forwarder']['service_name']     = node['mconf-stats']['logstash-forwarder']['service_name']
+override['logstash-forwarder']['logstash_servers'] = node['mconf-stats']['logstash-forwarder']['logstash_servers']
+override['logstash-forwarder']['timeout']          = node['mconf-stats']['logstash-forwarder']['timeout']
+override['logstash-forwarder']['config_path']      = node['mconf-stats']['logstash-forwarder']['config_path']
+override['logstash-forwarder']['version']          = node['mconf-stats']['logstash-forwarder']['version']
+override['logstash-forwarder']['ssl_ca']           = "#{node['mconf-stats']['logstash-forwarder']['certificate_path']}/#{node['mconf-stats']['logstash-forwarder']['ssl_certificate']}"
+
+
+# Elasticdump
+override['nodejs']['engine']         = 'node'
+override['nodejs']['install_method'] = 'package'

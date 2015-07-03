@@ -10,11 +10,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-%W{git #{node['mconf-stats']['java_pkg']}}.each do |pkg|
-  package pkg
-end
+include_recipe 'nodejs'
 
-include_recipe 'mconf-stats::logstash'
-include_recipe 'mconf-stats::elasticsearch'
-include_recipe 'mconf-stats::kibana'
-include_recipe 'mconf-stats::elasticdump'
+nodejs_npm 'elasticdump' do
+  version node['mconf-stats']['elasticdump']['version']
+end

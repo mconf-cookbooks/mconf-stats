@@ -104,3 +104,7 @@ default['mconf-stats']['kibana']['group']     = 'kibana'
 default['mconf-stats']['kibana']['port']      = 5601
 default['mconf-stats']['kibana']['http_port'] = 80
 default['mconf-stats']['kibana']['es_index']  = 'kibana-int'
+
+
+# Elasticdump
+default['mconf-stats']['elasticdump']['version'] = '0.14.1'

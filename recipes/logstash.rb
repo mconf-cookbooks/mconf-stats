@@ -114,14 +114,11 @@ my_files.each do |my_config|
 end
 
 # Remove old configs we didn't create
-Dir["#{conf_dir}/*"].each do |path|
-  filename = ::File.basename(path)
-  file path do
-    action :delete
-    not_if { configs_created.include?(filename) }
+ruby_block "remove old logstash configs" do
+  block do
+    Dir["#{conf_dir}/*"].each do |path|
+      filename = ::File.basename(path)
+      File.delete(path) unless configs_created.include?(filename)
+    end
   end
 end
-
-# logstash_pattern name do
-#   action [:create]
-# end

@@ -107,6 +107,7 @@ my_files.each do |my_config|
     templates my_config['template']
     variables my_config['variables']
     templates_cookbook 'mconf-stats'
+    mode '0660'
     action :create
     notifies :restart, "service[#{service_name}]", :delayed
   end
@@ -121,4 +122,18 @@ ruby_block "remove old logstash configs" do
       File.delete(path) unless configs_created.include?(filename)
     end
   end
+end
+
+# Copy user configuration files, if any
+remote_directory conf_dir do
+  source node['mconf-stats']['logstash']['user_configs']
+  owner instance_configs['user']
+  group instance_configs['group']
+  mode '0755'
+  files_mode '0660'
+  files_owner instance_configs['user']
+  files_group instance_configs['group']
+  purge false
+  action :create
+  not_if { node['mconf-stats']['logstash']['user_configs'].nil? }
 end

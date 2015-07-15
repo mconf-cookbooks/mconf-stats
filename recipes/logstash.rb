@@ -50,79 +50,11 @@ service service_name do
   action [:enable, :start]
 end
 
-
-# First map all config files we need to create
-# Note: we add ".erb" to all template name because the logstash cookbook
-# chomps the extension off and we want to keep the extension set by the user
-configs_created = []
-my_files = []
-
-node['mconf-stats']['logstash']['inputs']['files'].each do |config|
-  my_files << {
-    'name' => config['name'],
-    'variables' => config.to_hash,
-    'template' => { "#{config['name']}.erb" => 'logstash/input_file.conf.erb' }
-  }
-end
-
-unless node['mconf-stats']['logstash']['inputs']['lumberjack']['name'].nil?
-
-  # setup the secrets first
-  node.run_state['lumberjack_for'] = :logstash
-  node.run_state['logstash_service'] = service_name
-  include_recipe "mconf-stats::_lumberjack_certificates"
-
-  vars = node['mconf-stats']['logstash']['inputs']['lumberjack'].to_hash
-  vars['ssl_certificate'] = "#{vars['certificate_path']}/#{vars['ssl_certificate']}"
-  vars['ssl_key'] = "#{vars['certificate_path']}/#{vars['ssl_key']}"
-
-  my_files << {
-    'name' => vars['name'],
-    'variables' => vars,
-    'template' => { "#{vars['name']}.erb" => 'logstash/input_lumberjack.conf.erb' }
-  }
-end
-
-node['mconf-stats']['logstash']['outputs']['elasticsearch'].each do |config|
-  my_files << {
-    'name' => config['name'],
-    'variables' => config.to_hash,
-    'template' => { "#{config['name']}.erb" => 'logstash/output_elasticsearch.conf.erb' }
-  }
-end
-
-unless node['mconf-stats']['logstash']['outputs']['stdout'].empty?
-  vars = node['mconf-stats']['logstash']['outputs']['stdout'].to_hash
-  my_files << {
-    'name' => vars['name'],
-    'variables' => vars,
-    'template' => { "#{vars['name']}.erb" => 'logstash/output_stdout.conf.erb' }
-  }
-end
-
-# Create all config files using logstash
-my_files.each do |my_config|
-  tmpl = logstash_config my_config['name'] do
-    instance instance_name
-    templates my_config['template']
-    variables my_config['variables']
-    templates_cookbook 'mconf-stats'
-    mode '0660'
-    action :create
-    notifies :restart, "service[#{service_name}]", :delayed
-  end
-  configs_created << tmpl.name
-end
-
-# Remove old configs we didn't create
-ruby_block "remove old logstash configs" do
-  block do
-    Dir["#{conf_dir}/*"].each do |path|
-      filename = ::File.basename(path)
-      File.delete(path) unless configs_created.include?(filename)
-    end
-  end
-end
+# Setup the secrets for lumberjack
+# It will only setup if the data bags with the secrets exist, otherwise won't do anything
+node.run_state['lumberjack_for'] = :logstash
+node.run_state['logstash_service'] = service_name
+include_recipe "mconf-stats::_lumberjack_certificates"
 
 # Copy user configuration files, if any
 remote_directory conf_dir do
@@ -133,7 +65,7 @@ remote_directory conf_dir do
   files_mode '0660'
   files_owner instance_configs['user']
   files_group instance_configs['group']
-  purge false
+  purge true
   action :create
   not_if { node['mconf-stats']['logstash']['user_configs'].nil? }
 end

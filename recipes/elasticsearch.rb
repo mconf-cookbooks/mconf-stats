@@ -11,9 +11,25 @@
 #
 
 include_recipe 'elasticsearch'
-# include_recipe 'elasticsearch::proxy'
 
-es_url = "localhost:#{node['mconf-stats']['elasticsearch']['http']['port']}"
+es_url = "http://localhost:#{node['mconf-stats']['elasticsearch']['http']['port']}"
+
+# Ensure elasticsearch is running, we need it now (kibana also needs it)
+service 'elasticsearch' do
+  action :start
+end
+ruby_block "wait elasticsearch to start" do
+  block do
+    1.upto(30) do |i|
+      if system("curl -s '#{es_url}'")
+        Chef::Log.info("Service elasticsearch started, will stop waiting! (loop #{i})")
+        break
+      end
+      sleep 1
+    end
+  end
+  action :run
+end
 
 # Default configurations for elasticsearch
 bash "elasticsearch default configs: disk threshold" do

@@ -98,6 +98,9 @@ default['mconf-stats']['elasticsearch']['cluster']['name']  = "mconf_cluster"
 default['mconf-stats']['elasticsearch']['allocated_memory'] = "2048m"
 default['mconf-stats']['elasticsearch']['http']['port']     = 9200
 default['mconf-stats']['elasticsearch']['user']             = 'elasticsearch'
+default['mconf-stats']['elasticsearch']['disk_threshold']['enabled'] = true
+default['mconf-stats']['elasticsearch']['disk_threshold']['low']     = '85%'
+default['mconf-stats']['elasticsearch']['disk_threshold']['high']    = '90%'
 
 
 # Kibana

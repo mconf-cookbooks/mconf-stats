@@ -12,3 +12,19 @@
 
 include_recipe 'elasticsearch'
 # include_recipe 'elasticsearch::proxy'
+
+es_url = "localhost:#{node['mconf-stats']['elasticsearch']['http']['port']}"
+
+# Default configurations for elasticsearch
+bash "elasticsearch default configs: disk threshold" do
+  code <<-EOS
+    curl -XPUT #{es_url}/_cluster/settings -d '{
+      "transient" : {
+        "cluster.routing.allocation.disk.threshold_enabled": "#{node['mconf-stats']['elasticsearch']['disk_threshold']['enabled']}",
+        "cluster.routing.allocation.disk.watermark.low": "#{node['mconf-stats']['elasticsearch']['disk_threshold']['low']}",
+        "cluster.routing.allocation.disk.watermark.high": "#{node['mconf-stats']['elasticsearch']['disk_threshold']['high']}"
+      }
+    }'
+  EOS
+  action :run
+end

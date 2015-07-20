@@ -21,6 +21,13 @@
 #   init: /etc/init.d/elasticsearch
 #   default http port: 9200
 #   default node ports: 9300-9400 (gets the first one that's free)
+#
+# * Kibana
+#   path: /opt/kibana/current
+#   logs: /opt/kibana/current/log/kibana.log
+#   config: /opt/kibana/current/config/kibana.yml
+#   init: /etc/init/kibana
+#   default port: 5601, 80
 
 # User and group on the server the application is being deployed
 default['mconf-stats']['user'] = node['mconf']['user']

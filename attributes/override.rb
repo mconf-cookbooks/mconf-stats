@@ -53,6 +53,7 @@ override['kibana']['version']                = "#{node['mconf-stats']['kibana'][
 override['kibana']['java_webserver_port']    = node['mconf-stats']['kibana']['port']
 override['kibana']['webserver_port']         = node['mconf-stats']['kibana']['http_port']
 override['kibana']['install_path']           = node['mconf-stats']['kibana']['basedir']
+override['kibana']['install_dir']            = "#{node['kibana']['install_path']}/kibana"
 override['kibana']['user']                   = node['mconf-stats']['kibana']['user']
 override['kibana']['group']                  = node['mconf-stats']['kibana']['group']
 override['kibana']['config']['kibana_index'] = node['mconf-stats']['kibana']['es_index']

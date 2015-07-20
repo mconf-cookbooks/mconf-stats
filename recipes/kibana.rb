@@ -61,6 +61,15 @@ kibana_web 'kibana' do
   not_if { node['kibana']['webserver'] == '' }
 end
 
+# Create the directory for the logfile
+directory File.join(node['kibana']['install_dir'], 'current', 'log') do
+  owner node['mconf-stats']['kibana']['user']
+  group node['mconf-stats']['kibana']['group']
+  mode '0755'
+  recursive true
+  action :create
+end
+
 # Service is taken mostly from the cookbook 'kibana' (not 'kibana_lwrp')
 service 'kibana' do
   provider Chef::Provider::Service::Upstart
@@ -71,11 +80,11 @@ template '/etc/init/kibana.conf' do
   cookbook 'mconf-stats'
   source 'kibana/upstart.conf.erb'
   variables(
-    user: node['kibana']['user'],
-    group: node['kibana']['group'],
+    user: node['mconf-stats']['kibana']['user'],
+    group: node['mconf-stats']['kibana']['group'],
     dir: node['kibana']['install_dir'],
     port: node['mconf-stats']['kibana']['port'],
-    options: ''
+    options: "-l current/log/kibana.log"
   )
   notifies :restart, 'service[kibana]', :delayed
 end

@@ -117,7 +117,7 @@ default['mconf-stats']['kibana']['user']      = 'kibana'
 default['mconf-stats']['kibana']['group']     = 'kibana'
 default['mconf-stats']['kibana']['port']      = 5601
 default['mconf-stats']['kibana']['http_port'] = 80
-default['mconf-stats']['kibana']['es_index']  = 'kibana-int'
+default['mconf-stats']['kibana']['es_index']  = '.kibana'
 default['mconf-stats']['kibana']['data_bag']  = 'kibana'
 
 # Elasticdump

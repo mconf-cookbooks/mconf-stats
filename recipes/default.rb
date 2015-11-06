@@ -14,7 +14,7 @@
   package pkg
 end
 
-include_recipe 'mconf-stats::logstash'
+include_recipe 'mconf-stats::logstash-server'
 include_recipe 'mconf-stats::elasticsearch'
 include_recipe 'mconf-stats::elasticdump'
 include_recipe 'mconf-stats::kibana'

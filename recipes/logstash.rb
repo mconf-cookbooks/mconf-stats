@@ -52,7 +52,6 @@ end
 
 # Setup the secrets for lumberjack
 # It will only setup if the data bags with the secrets exist, otherwise won't do anything
-node.run_state['lumberjack_for'] = :logstash
 node.run_state['logstash_service'] = service_name
 include_recipe "mconf-stats::_lumberjack_certificates"
 

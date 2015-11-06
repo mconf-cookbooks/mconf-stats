@@ -19,6 +19,13 @@ if node.run_state['lumberjack_for'] == :forwarder
   bag_item = node['mconf-stats']['logstash-forwarder']['data_item']
   target_user = 'root'
   target_group = 'root'
+elsif node.run_state['lumberjack_for'] == :logstash_client
+  path = node['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path']
+  certificate_filename = node['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']
+  bag_name = node['mconf-stats']['logstash']['inputs']['lumberjack']['data_bag']
+  bag_item = node['mconf-stats']['logstash']['inputs']['lumberjack']['data_item']
+  target_user = node['mconf-stats']['logstash']['user']
+  target_group = node['mconf-stats']['logstash']['group']
 else
   path = node['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path']
   certificate_filename = node['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']

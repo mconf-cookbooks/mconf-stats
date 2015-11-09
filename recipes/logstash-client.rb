@@ -26,6 +26,3 @@ end
 execute "setfacl -m u:logstash:r /var/log/syslog"
 execute "setfacl -m u:logstash:r /var/log/auth.log"
 execute "usermod -a -G daemon logstash"
-execute "mv /opt/logstash/mconf/etc/conf.d/patterns /opt/logstash/mconf/etc/conf.d/.patterns" do
-	only_if { ::FileTest.directory?("/opt/logstash/mconf/etc/conf.d/patterns") }
-end

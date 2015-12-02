@@ -1,0 +1,54 @@
+filebeat:
+  prospectors:
+  <% if @syslog %>
+    -
+      paths:
+        - /var/log/auth.log
+        - /var/log/syslog
+      input_type: log
+      document_type: syslog
+
+  <% end %>
+  <% if @freeswitch_xml_cdr %>
+    -
+      paths:
+        - /opt/freeswitch/log/xml_cdr/*.cdr.xml
+      input_type: log
+      document_type: freeswitch-xml_cdr
+
+  <% end %>
+  <% if @nginx_access %>
+    -
+      paths:
+        - /var/log/nginx/access.log
+        - /var/log/nginx/bigbluebutton.access.log
+      input_type: log
+      document_type: nginx-access
+
+  <% end %>
+  <% if @nginx_errors %>
+    -
+      paths:
+        - /var/log/nginx/error.log
+      input_type: log
+      document_type: nginx-errors
+
+  <% end %>
+  registry_file: /var/lib/filebeat/registry
+
+output:
+  logstash:
+    enabled: true
+    hosts: ["<%= @hosts %>"]
+
+    tls:
+      certificate_authorities: ["<%= @ca_authorities %>"]
+      certificate: "<%= @certificate %>"
+      certificate_key: "<%= @certificate_key %>"
+
+logging:
+  files:
+    path: /var/log/filebeat
+    name: filebeat
+    rotateeverybytes: 10485760 # = 10MB
+    keepfiles: 7

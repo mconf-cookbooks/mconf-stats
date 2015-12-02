@@ -20,5 +20,6 @@ depends          'kibana_lwrp', '~> 2.0.5'
 depends          'libarchive', '~> 0.4.0' # for kibana_lwrp with chef 11
 depends          'hostsfile', '~> 2.4.5'
 depends          'nodejs', '~> 2.4.0'
+depends          'apt', '>= 2.7.0'
 
 recipe "mconf-stats::default", "Sets up an instance of Mconf-Stats"

@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: mconf-stats
-# Recipe:: logstash-server
+# Recipe:: beats
 # Author:: Fernando de Avila Bottin (<fbottin@mconf.org>)
 #
 # This file is part of the Mconf project.
@@ -10,10 +10,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-node.run_state['lumberjack_for'] = :logstash_server
-
-include_recipe 'mconf-stats::logstash'
-
-gem_package 'xml-simple'
-
-execute "usermod -a -G syslog logstash"
+include_recipe 'mconf-stats::packetbeat' if node['mconf-stats']['beats']['install_packetbeat']
+include_recipe 'mconf-stats::filebeat' if node['mconf-stats']['beats']['install_filebeat']
+include_recipe 'mconf-stats::topbeat' if node['mconf-stats']['beats']['install_topbeat']

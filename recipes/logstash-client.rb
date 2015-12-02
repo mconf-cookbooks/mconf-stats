@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: mconf-stats
-# Recipe:: default
+# Recipe:: logstash-client
 # Author:: Fernando de Avila Bottin (<fbottin@mconf.org>)
 #
 # This file is part of the Mconf project.
@@ -23,6 +23,4 @@ directory '/var/cache/sincedbs' do
   action :create
 end
 
-execute "setfacl -m u:logstash:r /var/log/syslog"
-execute "setfacl -m u:logstash:r /var/log/auth.log"
 execute "usermod -a -G daemon logstash"

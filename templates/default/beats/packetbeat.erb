@@ -2,11 +2,6 @@ interfaces:
   device: any
 
 protocols:
-  dns:
-    ports: [53]
-    include_authorities: true
-    include_additionals: true
-
   redis:
     ports: [<%= @redis_port %>]
 

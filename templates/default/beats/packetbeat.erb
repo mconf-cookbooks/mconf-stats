@@ -1,0 +1,22 @@
+interfaces:
+  device: any
+
+protocols:
+  redis:
+    ports: [<%= @redis_port %>]
+
+output:
+  logstash:
+    hosts: ["<%= @hosts %>"]
+
+    tls:
+      certificate_authorities: ["<%= @ca_authorities %>"]
+      certificate: "<%= @certificate %>"
+      certificate_key: "<%= @certificate_key %>"
+
+logging:
+  files:
+    path: /var/log/packetbeat
+    name: packetbeat
+    rotateeverybytes: 10485760 # = 10MB
+    keepfiles: 7

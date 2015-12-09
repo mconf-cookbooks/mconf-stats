@@ -1,0 +1,7 @@
+-
+      paths:
+      <% @prospector.paths.each do |path| %>
+        - <%= path %>
+      <% end %>
+      input_type: <%= @prospector.input_type %>
+      document_type: <%= @prospector.document_type %>

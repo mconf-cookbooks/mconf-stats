@@ -24,10 +24,7 @@ certificate_key = "#{node['mconf-stats']['beats']['certificate_path']}/#{node['m
 template node['mconf-stats']['beats']['filebeat']['config_path'] do
   source "/beats/filebeat.erb"
   variables(
-    syslog: node['mconf-stats']['beats']['filebeat']['syslog'],
-    freeswitch_xml_cdr: node['mconf-stats']['beats']['filebeat']['freeswitch_xml_cdr'],
-    nginx_access: node['mconf-stats']['beats']['filebeat']['nginx_access'],
-    nginx_errors: node['mconf-stats']['beats']['filebeat']['nginx_errors'],
+    prospectors: node['mconf-stats']['beats']['filebeat']['prospectors'],
     hosts: node['mconf-stats']['beats']['logstash_host'],
     ca_authorities: certificate_path,
     certificate: certificate_path,

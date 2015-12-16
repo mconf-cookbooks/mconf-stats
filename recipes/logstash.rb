@@ -68,3 +68,7 @@ remote_directory conf_dir do
   action :create
   not_if { node['mconf-stats']['logstash']['user_configs'].nil? }
 end
+
+node['mconf-stats']['logstash']['plugins'].each do |plugin|
+  execute "sudo -u #{instance_configs['user']} #{home}/bin/plugin install #{plugin}"
+end

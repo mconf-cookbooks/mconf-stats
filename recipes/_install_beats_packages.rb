@@ -17,7 +17,7 @@ apt_repository 'beats' do
   action node['mconf-stats']['beats']['apt']['action']
 end
 
-execute 'apt-get install apt-transport-https --force-yes -y'
+package "apt-transport-https"
 
 execute 'apt-get-update' do
   command 'apt-get update'

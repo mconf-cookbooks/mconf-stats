@@ -50,6 +50,7 @@ default['mconf-stats']['logstash']['checksum']      = 'a12f91bc87f6cd8f1b481c9e9
 default['mconf-stats']['logstash']['xms']           = '1536M'
 default['mconf-stats']['logstash']['xmx']           = '1536M'
 default['mconf-stats']['logstash']['log_file']      = 'logstash.log'
+default['mconf-stats']['logstash']['plugins']       = nil
 
 # Directory from this cookbooks where user's config files for logstash are.
 # All files in this directory will be automatically copied to logstash.

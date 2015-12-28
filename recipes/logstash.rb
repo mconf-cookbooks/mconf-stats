@@ -15,6 +15,7 @@ instance_configs = node['logstash']['instance'][instance_name]
 service_name = "logstash_#{instance_name}"
 home = node['mconf-stats']['logstash']['instance_home']
 conf_dir = node['mconf-stats']['logstash']['instance_conf']
+migration_dir = node['mconf-stats']['logstash']['migration_dir']
 
 logstash_instance instance_name do
   create_account true
@@ -71,4 +72,24 @@ end
 
 node['mconf-stats']['logstash']['plugins'].each do |plugin|
   execute "sudo -u #{instance_configs['user']} #{home}/bin/plugin install #{plugin}"
+end
+
+# Copy user migration files, if any
+remote_directory migration_dir do
+  source node['mconf-stats']['logstash']['migration_configs']
+  owner instance_configs['user']
+  group instance_configs['group']
+  mode '0755'
+  files_mode '0660'
+  files_owner instance_configs['user']
+  files_group instance_configs['group']
+  purge true
+  action :create
+  not_if { node['mconf-stats']['logstash']['migration_configs'].nil? }
+end
+
+Chef::Log.info('Running logstash with ElasticSearch migration files')
+execute "migrations" do
+  command "sudo -u #{node['mconf-stats']['logstash']['user']} #{home}/bin/logstash agent -f #{node['mconf-stats']['logstash']['migration_dir']}"
+  not_if { node['mconf-stats']['logstash']['migration_configs'].nil? }
 end

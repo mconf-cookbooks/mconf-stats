@@ -52,6 +52,9 @@ default['mconf-stats']['logstash']['xmx']           = '1536M'
 default['mconf-stats']['logstash']['log_file']      = 'logstash.log'
 default['mconf-stats']['logstash']['plugins']       = nil
 
+default['mconf-stats']['logstash']['migration_dir'] = "#{node['mconf-stats']['logstash']['instance_home']}/etc/migration"
+default['mconf-stats']['logstash']['migration_configs'] = nil
+
 # Directory from this cookbooks where user's config files for logstash are.
 # All files in this directory will be automatically copied to logstash.
 default['mconf-stats']['logstash']['user_configs'] = nil

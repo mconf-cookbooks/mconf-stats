@@ -4,3 +4,4 @@ default['mconf-stats']['beats']['filebeat']['conf_file']          = ::File.join(
 default['mconf-stats']['beats']['filebeat']['service_name']       = 'filebeat'
 default['mconf-stats']['beats']['filebeat']['config_path']        = '/etc/filebeat/filebeat.yml'
 default['mconf-stats']['beats']['filebeat']['prospectors']        = nil
+default['mconf-stats']['beats']['filebeat']['shipper']            = nil

@@ -26,6 +26,7 @@ template node['mconf-stats']['beats']['filebeat']['config_path'] do
   variables(
     prospectors: node['mconf-stats']['beats']['filebeat']['prospectors'],
     hosts: node['mconf-stats']['beats']['logstash_host'],
+    shipper: node['mconf-stats']['beats']['filebeat']['shipper'],
     ca_authorities: certificate_path,
     certificate: certificate_path,
     certificate_key: certificate_key

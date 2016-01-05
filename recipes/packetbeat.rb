@@ -26,6 +26,7 @@ template node['mconf-stats']['beats']['packetbeat']['config_path'] do
   variables(
     redis_port: node['mconf-stats']['beats']['redis_port'],
     hosts: node['mconf-stats']['beats']['logstash_host'],
+    shipper: node['mconf-stats']['beats']['packetbeat']['shipper'],
     ca_authorities: certificate_path,
     certificate: certificate_path,
     certificate_key: certificate_key

@@ -5,6 +5,16 @@ filebeat:
   <% end %>
   registry_file: /var/lib/filebeat/registry
 
+<% if @shipper %>
+shipper:
+<% if @shipper['name'] %>
+  name: <%= @shipper['name'] %>
+<% end %>
+<% if @shipper['tags'] %>
+  tags: <%= @shipper['tags'] %>
+<% end %>
+<% end %>
+
 output:
   logstash:
     enabled: true

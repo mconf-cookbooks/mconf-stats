@@ -14,9 +14,9 @@ description      "Sets up an instance of Mconf-Stats"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.0.1"
 depends          'logstash', '~> 0.11.4'
-depends          'elasticsearch', '~> 0.3.13'
+depends          'elasticsearch', '~> 2.1.1'
 depends          'logstash-forwarder', '0.2.0'
-depends          'kibana_lwrp', '~> 2.0.5'
+depends          'kibana_lwrp', '~> 2.0.6'
 depends          'libarchive', '~> 0.4.0' # for kibana_lwrp with chef 11
 depends          'hostsfile', '~> 2.4.5'
 depends          'nodejs', '~> 2.4.0'

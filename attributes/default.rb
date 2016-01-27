@@ -44,9 +44,9 @@ default['mconf-stats']['logstash']['instance_home'] = "#{node['mconf-stats']['lo
 default['mconf-stats']['logstash']['instance_conf'] = "#{node['mconf-stats']['logstash']['instance_home']}/etc/conf.d"
 default['mconf-stats']['logstash']['debug']         = false
 default['mconf-stats']['logstash']['install_type']  = 'tarball'
-default['mconf-stats']['logstash']['version']       = '1.5.1'
+default['mconf-stats']['logstash']['version']       = '2.1.1'
 default['mconf-stats']['logstash']['source_url']    = "https://download.elasticsearch.org/logstash/logstash/logstash-#{node['mconf-stats']['logstash']['version']}.tar.gz"
-default['mconf-stats']['logstash']['checksum']      = 'a12f91bc87f6cd8f1b481c9e9d0370a650b2c36fdc6a656785ef883cb1002894' # sha256sum logstash-1.5.1.tar.gz
+default['mconf-stats']['logstash']['checksum']      = '2ea975e16a02b416a5bd9eed5ab280224820f278d54f6e0ec4cccf0d8f5ca610' # sha256sum logstash-2.1.1.tar.gz
 default['mconf-stats']['logstash']['xms']           = '1536M'
 default['mconf-stats']['logstash']['xmx']           = '1536M'
 default['mconf-stats']['logstash']['log_file']      = 'logstash.log'
@@ -104,7 +104,7 @@ default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']          =
 
 
 # Elastic Search
-default['mconf-stats']['elasticsearch']['version']          = "1.6.0"
+default['mconf-stats']['elasticsearch']['version']          = "2.1.1"
 default['mconf-stats']['elasticsearch']['cluster']['name']  = "mconf_cluster"
 default['mconf-stats']['elasticsearch']['allocated_memory'] = "2048m"
 default['mconf-stats']['elasticsearch']['http']['port']     = 9200
@@ -116,7 +116,8 @@ default['mconf-stats']['elasticsearch']['disk_threshold']['high']    = '90%'
 
 # Kibana
 default['mconf-stats']['kibana']['basedir']   = '/opt'
-default['mconf-stats']['kibana']['version']   = '4.1.0'
+default['mconf-stats']['kibana']['version']   = '4.3.1'
+default['mconf-stats']['kibana']['checksum']   = 'c6a91921a0055714fd24fb94a70b7057f43492da6bd8c4f2f1acbf0964bf09b9' # sha256sum kibana-4.3.1.tar.gz
 default['mconf-stats']['kibana']['user']      = 'kibana'
 default['mconf-stats']['kibana']['group']     = 'kibana'
 default['mconf-stats']['kibana']['port']      = 5601

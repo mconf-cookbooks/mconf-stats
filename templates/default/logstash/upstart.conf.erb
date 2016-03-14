@@ -22,6 +22,7 @@ script
   export LOGSTASH_OPTS="<%= @args.join(' ') %>"
   export GC_OPTS="<%= @gc_opts %>"
   export JAVA_OPTS="-server -Xms<%= @min_heap %> -Xmx<%= @max_heap %> -Djava.io.tmpdir=$LOGSTASH_HOME/tmp/ <%= @java_opts %> <%= '-Djava.net.preferIPv4Stack=true' if @ipv4_only %>"
+  export HEAP_DUMP_PATH="-XX:HeapDumpPath=$LOGSTASH_HOME/heapdump.hprof"
   exec $LOGSTASH_HOME/bin/logstash $LOGSTASH_OPTS
 end script
 

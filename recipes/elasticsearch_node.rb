@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: mconf-stats
-# Recipe:: default
-# Author:: Leonardo Crauss Daronco (<daronco@mconf.org>)
+# Recipe:: elasticsearch_node
+# Author:: Fernando de Avila Bottin (<fbottin@mconf.org>)
 #
 # This file is part of the Mconf project.
 #
@@ -9,6 +9,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
+
+%W{git curl #{node['mconf-stats']['java_pkg']}}.each do |pkg|
+  package pkg
+end
 
 elasticsearch_user 'elasticsearch'
 elasticsearch_install 'elasticsearch' do
@@ -57,7 +61,9 @@ elasticsearch_configure 'elasticsearch' do
       'cluster.name' => node['mconf-stats']['elasticsearch']['cluster']['name'],
       'http.port' => node['mconf-stats']['elasticsearch']['http']['port'],
       'discovery.zen.ping.multicast.enabled' => 'false',
-      'network.host' => node['mconf-stats']['elasticsearch']['network']['host']
+      'network.host' => node['mconf-stats']['elasticsearch']['network']['host'],
+      'node.master' => node['mconf-stats']['elasticsearch']['node']['master'],
+      'discovery.zen.ping.unicast.hosts' => node['mconf-stats']['elasticsearch']['node']['master_host']
     })
 end
 elasticsearch_service 'elasticsearch'

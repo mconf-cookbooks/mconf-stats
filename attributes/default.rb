@@ -30,8 +30,8 @@
 #   default port: 5601, 80
 
 # User and group on the server the application is being deployed
-default['mconf-stats']['user']      = node['mconf']['user'] || 'mconf'
-default['mconf-stats']['app_group'] = node['mconf']['app_group'] || 'www-data'
+default['mconf-stats']['user']      = node['mconf-stats']['user'] || 'mconf'
+default['mconf-stats']['app_group'] = node['mconf-stats']['app_group'] || 'www-data'
 default['mconf-stats']['domain']    = '192.168.0.100'
 default['mconf-stats']['java_pkg']  = 'openjdk-7-jre-headless'
 
@@ -44,9 +44,10 @@ default['mconf-stats']['logstash']['instance_home'] = "#{node['mconf-stats']['lo
 default['mconf-stats']['logstash']['instance_conf'] = "#{node['mconf-stats']['logstash']['instance_home']}/etc/conf.d"
 default['mconf-stats']['logstash']['debug']         = false
 default['mconf-stats']['logstash']['install_type']  = 'tarball'
-default['mconf-stats']['logstash']['version']       = '2.1.1'
+default['mconf-stats']['logstash']['version']       = '2.2.2'
 default['mconf-stats']['logstash']['source_url']    = "https://download.elasticsearch.org/logstash/logstash/logstash-#{node['mconf-stats']['logstash']['version']}.tar.gz"
-default['mconf-stats']['logstash']['checksum']      = '2ea975e16a02b416a5bd9eed5ab280224820f278d54f6e0ec4cccf0d8f5ca610' # sha256sum logstash-2.1.1.tar.gz
+default['mconf-stats']['logstash']['checksum']      = 'f0a29ec8fd327e42f3023bd6bf85a00ac20617bfc214df59c765453977398312'  #logstash-2.2.2.tar.gz
+
 default['mconf-stats']['logstash']['xms']           = '1536M'
 default['mconf-stats']['logstash']['xmx']           = '1536M'
 default['mconf-stats']['logstash']['log_file']      = 'logstash.log'
@@ -104,20 +105,25 @@ default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']          =
 
 
 # Elastic Search
-default['mconf-stats']['elasticsearch']['version']          = "2.1.1"
-default['mconf-stats']['elasticsearch']['cluster']['name']  = "mconf_cluster"
-default['mconf-stats']['elasticsearch']['allocated_memory'] = "2048m"
-default['mconf-stats']['elasticsearch']['http']['port']     = 9200
-default['mconf-stats']['elasticsearch']['user']             = 'elasticsearch'
+default['mconf-stats']['elasticsearch']['version']                   = "2.2.0"
+default['mconf-stats']['elasticsearch']['cluster']['name']           = "mconf_cluster"
+default['mconf-stats']['elasticsearch']['node']['master']            = true
+default['mconf-stats']['elasticsearch']['node']['master_host']       = nil
+default['mconf-stats']['elasticsearch']['allocated_memory']          = "2048m"
+default['mconf-stats']['elasticsearch']['network']['host']           = '0.0.0.0'
+default['mconf-stats']['elasticsearch']['http']['port']              = 9200
+default['mconf-stats']['elasticsearch']['user']                      = 'elasticsearch'
 default['mconf-stats']['elasticsearch']['disk_threshold']['enabled'] = true
 default['mconf-stats']['elasticsearch']['disk_threshold']['low']     = '85%'
 default['mconf-stats']['elasticsearch']['disk_threshold']['high']    = '90%'
+default['mconf-stats']['elasticsearch']['backup_repo']               = ['/opt/elasticsearch/snapshots']
 
 
 # Kibana
 default['mconf-stats']['kibana']['basedir']   = '/opt'
-default['mconf-stats']['kibana']['version']   = '4.3.1'
-default['mconf-stats']['kibana']['checksum']   = 'c6a91921a0055714fd24fb94a70b7057f43492da6bd8c4f2f1acbf0964bf09b9' # sha256sum kibana-4.3.1.tar.gz
+default['mconf-stats']['kibana']['version']   = '4.4.1'
+default['mconf-stats']['kibana']['checksum']   = 'fb536696b27b9807507c5d9014c90722e7b28cb2e068a80879cc9bb861316be1'  #kibana-4.4.1-linux-x64.tar.gz
+
 default['mconf-stats']['kibana']['user']      = 'kibana'
 default['mconf-stats']['kibana']['group']     = 'kibana'
 default['mconf-stats']['kibana']['port']      = 5601

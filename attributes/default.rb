@@ -30,8 +30,8 @@
 #   default port: 5601, 80
 
 # User and group on the server the application is being deployed
-default['mconf-stats']['user']      = node['mconf-stats']['user'] || 'mconf'
-default['mconf-stats']['app_group'] = node['mconf-stats']['app_group'] || 'www-data'
+default['mconf-stats']['user']      = 'mconf'
+default['mconf-stats']['app_group'] = 'www-data'
 default['mconf-stats']['domain']    = '192.168.0.100'
 default['mconf-stats']['java_pkg']  = 'openjdk-7-jre-headless'
 

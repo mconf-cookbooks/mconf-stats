@@ -128,6 +128,12 @@ kibana_bag.each_pair do |name, url|
   end
 end
 
+# In the newest versions of kibana this file is created and used in the initialization
+# of the instance. But the last version of the cookbook don't treat this file very well.
+# So we need to change the owner of this file.
+
+# The file doesn't exists until the first restart. So if the file is not there we need
+# to restart to make the alterations.
 if !File.exist?('/opt/kibana/current/optimize/.babelcache.json')
   service 'kibana' do
     action :restart

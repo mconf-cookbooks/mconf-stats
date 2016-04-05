@@ -14,7 +14,24 @@
   package pkg
 end
 
-elasticsearch_user 'elasticsearch'
+elasticsearch_user 'elasticsearch' do
+  username node['mconf-stats']['elasticsearch']['user']
+  uid node['mconf-stats']['elasticsearch']['user_uid']
+  groupname node['mconf-stats']['elasticsearch']['group']
+  gid node['mconf-stats']['elasticsearch']['group_gid']
+end
+
+# Creates the directory used for store the snapshots in all nodes.
+backup_dir = node['mconf-stats']['elasticsearch']['backup_repo'][0]
+
+directory backup_dir do
+  owner node['mconf-stats']['elasticsearch']['user']
+  group node['mconf-stats']['elasticsearch']['group']
+  mode '0755'
+  action :create
+  not_if { node['mconf-stats']['elasticsearch']['backup_repo'].nil? }
+end
+
 elasticsearch_install 'elasticsearch' do
   package_options "--force-confnew"
 end

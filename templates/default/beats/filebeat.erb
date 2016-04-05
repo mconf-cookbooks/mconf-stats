@@ -1,7 +1,7 @@
 filebeat:
   prospectors:
   <% @prospectors.each do |prospector| %>
-    <%= render 'beats/prospectors.erb', variables: { prospector: prospector } %>
+    <%= render 'beats/prospectors.erb', variables: { prospector: prospector, input_type: @input_type, ignore_older: @ignore_older } %>
   <% end %>
   registry_file: /var/lib/filebeat/registry
 

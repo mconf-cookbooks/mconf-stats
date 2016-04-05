@@ -10,17 +10,21 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Setup the secrets for logstash
+# It will only setup if the data bags with the secrets exist, otherwise won't do anything
 include_recipe "mconf-stats::_beats_certificates"
 
 include_recipe "mconf-stats::_install_beats_packages"
 
 package 'packetbeat' do
+  options "-o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'"
   version node['mconf-stats']['beats']['packetbeat']['version']
 end
 
 certificate_path = "#{node['mconf-stats']['beats']['certificate_path']}/#{node['mconf-stats']['beats']['ssl_certificate']}"
 certificate_key = "#{node['mconf-stats']['beats']['certificate_path']}/#{node['mconf-stats']['beats']['ssl_key']}"
 
+# Create the configuration file with the informations received
 template node['mconf-stats']['beats']['packetbeat']['config_path'] do
   source "/beats/packetbeat.erb"
   variables(

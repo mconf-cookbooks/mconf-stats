@@ -3,5 +3,16 @@
       <% @prospector.paths.each do |path| %>
         - <%= path %>
       <% end %>
-      input_type: <%= @prospector.input_type %>
+      <% if @prospector.has_key? "options" %>
+      <% @prospector.options.each do |key,value| %>
+      <%= key %>:
+      <% value.each do |key,value| %>
+        <%= key %>: <%= value %>
+      <% end %>
+      <% end %>
+      <% end %>
+      <% ignore_older = if @prospector.has_key? "ignore_older"; ignore_older = @prospector.ignore_older else ignore_older = @ignore_older end %>
+      ignore_older: <%= ignore_older %>
+      <% input_type = if @prospector.has_key? "input_type"; input_type = @prospector.input_type else input_type = @input_type end %>
+      input_type: <%= input_type %>
       document_type: <%= @prospector.document_type %>

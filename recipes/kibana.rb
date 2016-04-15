@@ -89,7 +89,6 @@ template '/etc/init/kibana.conf' do
   notifies :restart, 'service[kibana]', :delayed
 end
 
-
 # Prepopulate ES with our basic information for Kibana
 seeds_file = ::File.join(Chef::Config[:file_cache_path], 'kibana-seeds.json')
 cookbook_file seeds_file do
@@ -126,5 +125,22 @@ kibana_bag.each_pair do |name, url|
                                 "localhost:#{node['mconf-stats']['elasticsearch']['http']['port']}",
                                 node['mconf-stats']['kibana']['es_index'])
     action :run
+  end
+end
+
+# In the newest versions of kibana this file is created and used in the initialization
+# of the instance. But the last version of the cookbook don't treat this file very well.
+# So we need to change the owner of this file.
+
+# The file doesn't exists until the first restart. So if the file is not there we need
+# to restart to make the alterations.
+if !File.exist?('/opt/kibana/current/optimize/.babelcache.json')
+  service 'kibana' do
+    action :restart
+  end
+end
+if File.exist?('/opt/kibana/current/optimize/.babelcache.json')
+  execute "fixup kibana/optimize/.babelcache.json owner" do
+   command "chown -R kibana:root /opt/kibana/current/optimize/.babelcache.json"
   end
 end

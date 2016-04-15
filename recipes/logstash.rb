@@ -70,9 +70,15 @@ remote_directory conf_dir do
   not_if { node['mconf-stats']['logstash']['user_configs'].nil? }
 end
 
+# Install plugins for logstash
+# It olnly will install the plugins if exists any plugin name in the plugins node
 node['mconf-stats']['logstash']['plugins'].each do |plugin|
   execute "sudo -u #{instance_configs['user']} #{home}/bin/plugin install #{plugin}"
 end
+
+# If any modification in the elasticsearch data was needed due any new info inserted on
+# the logstash filters, a migration file must be made. This files must located all entries
+# that need to be changed, making the changes, then, update the entries.
 
 # Copy user migration files, if any
 remote_directory migration_dir do
@@ -88,6 +94,8 @@ remote_directory migration_dir do
   not_if { node['mconf-stats']['logstash']['migration_configs'].nil? }
 end
 
+# Run a single instance of logstash with the configs located into the migration folder
+# created or updated in the command above. After finished the run the instance ends. 
 Chef::Log.info('Running logstash with ElasticSearch migration files')
 execute "migrations" do
   command "sudo -u #{node['mconf-stats']['logstash']['user']} #{home}/bin/logstash agent -f #{node['mconf-stats']['logstash']['migration_dir']}"

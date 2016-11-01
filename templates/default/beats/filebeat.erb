@@ -1,10 +1,14 @@
+# Filebeat prospectors
+
 filebeat.prospectors:
 <% @prospectors.each do |prospector| %>
   <%= render 'beats/prospectors.erb', variables: { prospector: prospector, input_type: @input_type, ignore_older: @ignore_older } %>
 <% end %>
 
+# Filebeat global options
 filebeat.registry_file: /var/lib/filebeat/registry
 
+# General
 <% if @shipper %>
 <% if @shipper['name'] %>
 name: <%= @shipper['name'] %>
@@ -14,6 +18,9 @@ tags: <%= @shipper['tags'] %>
 <% end %>
 <% end %>
 
+# Outputs
+
+# Logstash output
 output.logstash:
   enabled: false
   hosts: ["<%= @hosts %>"]
@@ -23,14 +30,17 @@ output.logstash:
   ssl.certificate: "<%= @certificate %>"
   ssl.key: "<%= @certificate_key %>"
 
+# File output
 output.file:
   path: /home/mconf/filebeat
   filename: output.filebeat
 
+# Console output
 output.console:
   enabled: true
   pretty: true
 
+# Logging
 logging.to_files: true
 logging.files:
   path: /var/log/filebeat

@@ -30,7 +30,7 @@ else
   path = node['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path']
   certificate_filename = node['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']
   key_filename = node['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']
-  ca_filename = node['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_ca']
+  ca_filenames = node['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_ca']
   bag_name = node['mconf-stats']['logstash']['inputs']['lumberjack']['data_bag']
   bag_item = node['mconf-stats']['logstash']['inputs']['lumberjack']['data_item']
   target_user = node['mconf-stats']['logstash']['user']
@@ -38,7 +38,7 @@ else
 end
 certificate_path = "#{path}/#{certificate_filename}"
 key_path = key_filename ? "#{path}/#{key_filename}" : nil
-ca_path = "#{path}/#{ca_filename}"
+ca_path = ca_filenames.map { |ca| "#{path}/#{ca}" }
 
 
 directory path do
@@ -72,8 +72,9 @@ if !lumberjack_secrets.nil?
   else
     Chef::Log.warn('Found a data bag for lumberjack secrets, but it was missing the \'certificate\' item')
   end
-  if lumberjack_secrets['ca']
-    node.run_state['lumberjack_decoded_ca'] = Base64.decode64(lumberjack_secrets['ca'])
+  if lumberjack_secrets['ca'] and not lumberjack_secrets['ca'].empty?
+    node.run_state['lumberjack_decoded_ca'] = []
+    lumberjack_secrets['ca'].each { |ca| node.run_state['lumberjack_decoded_ca'] << Base64.decode64(ca) }
   else
     Chef::Log.warn('Found a data bag for lumberjack secrets, but it was missing the \'CA certificate\' item')
   end
@@ -101,11 +102,13 @@ file certificate_path do
   notifies :restart, "service[#{node.run_state['logstash_service']}]", :delayed
 end
 
-file ca_path do
-  content node.run_state['lumberjack_decoded_ca']
-  owner target_user
-  group target_group
-  mode '0600'
-  not_if { node.run_state['lumberjack_decoded_ca'].nil? }
-  notifies :restart, "service[#{node.run_state['logstash_service']}]", :delayed
+ca_path.zip(node.run_state['lumberjack_decoded_ca']).each do |ca_file, ca_decoded|
+  file ca_file do
+    content ca_decoded
+    owner target_user
+    group target_group
+    mode '0600'
+    not_if { node.run_state['lumberjack_decoded_ca'].nil? }
+    notifies :restart, "service[#{node.run_state['logstash_service']}]", :delayed
+  end
 end

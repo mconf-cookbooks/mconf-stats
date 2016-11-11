@@ -103,7 +103,7 @@ default['mconf-stats']['logstash']['inputs']['lumberjack']['port']             =
 default['mconf-stats']['logstash']['inputs']['lumberjack']['data_bag']         = 'lumberjack'
 default['mconf-stats']['logstash']['inputs']['lumberjack']['data_item']        = 'secrets'
 default['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path'] = "#{default['mconf-stats']['logstash']['instance_home']}/certs"
-default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_ca']           = 'CA.crt'
+default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_ca']           = ['CA.crt']
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']  = 'lumberjack.crt'
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']          = 'lumberjack.key'
 

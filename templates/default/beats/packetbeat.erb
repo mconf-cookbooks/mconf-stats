@@ -27,11 +27,11 @@ tags: <%= @shipper['tags'] %>
 
 # Logstash output
 output.logstash:
-  enabled: false
+  enabled: true
   hosts: ["<%= @hosts %>"]
 
   ssl.enabled: true
-  ssl.certificate_authorities: ["<%= @ca_authorities %>"]
+  ssl.certificate_authorities: <%= @ca_authorities %>
   ssl.certificate: "<%= @certificate %>"
   ssl.key: "<%= @certificate_key %>"
 
@@ -42,7 +42,7 @@ output.file:
 
 # Console output
 output.console:
-  enabled: true
+  enabled: false
   pretty: true
 
 # Logging

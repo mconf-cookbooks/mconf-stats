@@ -7,6 +7,7 @@ default['mconf-stats']['beats']['redis_port']           = '6379'
 default['mconf-stats']['beats']['certificate_path']     = "/opt/beats/certs"
 default['mconf-stats']['beats']['ssl_certificate']      = 'beats.crt'
 default['mconf-stats']['beats']['ssl_key']              = 'beats.key'
+default['mconf-stats']['beats']['ssl_ca']               = ['CA.crt']
 default['mconf-stats']['beats']['data_bag']             = 'beats'
 default['mconf-stats']['beats']['data_item']            = 'secrets'
 default['mconf-stats']['beats']['apt']['uri']           = 'https://artifacts.elastic.co/packages/5.x/apt'

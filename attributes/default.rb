@@ -33,7 +33,7 @@
 default['mconf-stats']['user']      = 'mconf'
 default['mconf-stats']['app_group'] = 'www-data'
 default['mconf-stats']['domain']    = '192.168.0.100'
-default['mconf-stats']['java_pkg']  = 'openjdk-7-jre-headless'
+default['mconf-stats']['java_pkg']  = 'openjdk-8-jre-headless'
 
 # Logstash
 default['mconf-stats']['logstash']['user']          = 'logstash'
@@ -42,16 +42,19 @@ default['mconf-stats']['logstash']['basedir']       = '/opt/logstash'
 default['mconf-stats']['logstash']['instance_name'] = 'mconf'
 default['mconf-stats']['logstash']['instance_home'] = "#{node['mconf-stats']['logstash']['basedir']}/#{node['mconf-stats']['logstash']['instance_name']}"
 default['mconf-stats']['logstash']['instance_conf'] = "#{node['mconf-stats']['logstash']['instance_home']}/etc/conf.d"
+default['mconf-stats']['logstash']['instance_config'] = "#{node['mconf-stats']['logstash']['instance_home']}/config"
+default['mconf-stats']['logstash']['instance_data'] = "#{node['mconf-stats']['logstash']['instance_home']}/data"
+default['mconf-stats']['logstash']['instance_log']  = "#{node['mconf-stats']['logstash']['instance_home']}/logs"
 default['mconf-stats']['logstash']['debug']         = false
 default['mconf-stats']['logstash']['install_type']  = 'tarball'
-default['mconf-stats']['logstash']['version']       = '2.2.2'
-default['mconf-stats']['logstash']['source_url']    = "https://download.elasticsearch.org/logstash/logstash/logstash-#{node['mconf-stats']['logstash']['version']}.tar.gz"
-default['mconf-stats']['logstash']['checksum']      = 'f0a29ec8fd327e42f3023bd6bf85a00ac20617bfc214df59c765453977398312'  #logstash-2.2.2.tar.gz
+default['mconf-stats']['logstash']['version']       = '5.0.0'
+default['mconf-stats']['logstash']['source_url']    = "https://artifacts.elastic.co/downloads/logstash/logstash-#{node['mconf-stats']['logstash']['version']}.tar.gz"
+default['mconf-stats']['logstash']['checksum']      = 'b5ff5336a49540510f415479deb64566c3b2dad1ce8856dde3df3b6ca1aa8d90'  #logstash-5.0.0.tar.gz
 
 default['mconf-stats']['logstash']['xms']           = '1536M'
 default['mconf-stats']['logstash']['xmx']           = '1536M'
 default['mconf-stats']['logstash']['log_file']      = 'logstash.log'
-default['mconf-stats']['logstash']['plugins']       = nil
+default['mconf-stats']['logstash']['plugins']       = []
 
 default['mconf-stats']['logstash']['migration_dir'] = "#{node['mconf-stats']['logstash']['instance_home']}/etc/migration"
 default['mconf-stats']['logstash']['migration_configs'] = nil
@@ -100,6 +103,7 @@ default['mconf-stats']['logstash']['inputs']['lumberjack']['port']             =
 default['mconf-stats']['logstash']['inputs']['lumberjack']['data_bag']         = 'lumberjack'
 default['mconf-stats']['logstash']['inputs']['lumberjack']['data_item']        = 'secrets'
 default['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path'] = "#{default['mconf-stats']['logstash']['instance_home']}/certs"
+default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_ca']           = ['CA.crt']
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']  = 'lumberjack.crt'
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']          = 'lumberjack.key'
 

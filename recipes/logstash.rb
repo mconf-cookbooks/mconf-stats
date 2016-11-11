@@ -15,38 +15,59 @@ instance_configs = node['logstash']['instance'][instance_name]
 service_name = "logstash_#{instance_name}"
 home = node['mconf-stats']['logstash']['instance_home']
 conf_dir = node['mconf-stats']['logstash']['instance_conf']
+log_dir = node['mconf-stats']['logstash']['instance_log']
+config_dir = node['mconf-stats']['logstash']['instance_config']
 migration_dir = node['mconf-stats']['logstash']['migration_dir']
+
+logstash_conf = ::File.join(config_dir, "logstash.yml")
+jvm_conf = ::File.join(config_dir, "jvm.options")
+startup_conf = ::File.join(config_dir, "startup.options")
 
 logstash_instance instance_name do
   create_account true
-  action         :create
+  action :create
 end
 
-args      = ['agent', '-f', conf_dir]
-args.concat ['-l', "#{home}/log/#{instance_configs['log_file']}"]
-args.concat ['-w', instance_configs['workers'].to_s]
-args.concat ['-vv'] if instance_configs['debug']
-template "/etc/init/#{service_name}.conf" do
-  mode      '0644'
-  source    "logstash/upstart.conf.erb"
+# logstash_instance creates unnecessary 'log' directory
+# Logstash tarball already has its own 'logs' directory
+directory "#{home}/log" do
+  action :delete
+end
+
+template logstash_conf do
+  mode '0644'
+  source "logstash/logstash.yml.erb"
   variables(
-    nofile_soft: instance_configs['limit_nofile_soft'],
-    nofile_hard: instance_configs['limit_nofile_hard'],
-    home: home,
-    user: instance_configs['user'],
-    supervisor_gid: instance_configs['supervisor_gid'],
-    max_heap: instance_configs['xmx'],
-    min_heap: instance_configs['xms'],
-    args: args,
-    gc_opts: instance_configs['gc_opts'],
-    java_opts: instance_configs['java_opts'],
-    ipv4_only: instance_configs['ipv4_only']
+    path_conf: conf_dir,
+    path_log: log_dir
   )
+end
+
+template jvm_conf do
+  mode '0644'
+  source "logstash/jvm.options.erb"
+end
+
+# Run bin/system-install.sh
+template startup_conf do
+  mode '0644'
+  source "logstash/startup.options.erb"
+  variables(
+    ls_home: home,
+    ls_user: instance_configs['user'],
+    ls_group: instance_configs['group'],
+    service_name: service_name
+  )
+  notifies :run, "execute[system-install]", :immediately
+end
+
+execute 'system-install' do
+  command "#{home}/bin/system-install"
+  action :nothing
   notifies :restart, "service[#{service_name}]", :delayed
 end
 
 service service_name do
-  provider Chef::Provider::Service::Upstart
   supports restart: true, reload: true, status: false
   action [:enable, :start]
 end
@@ -73,7 +94,7 @@ end
 # Install plugins for logstash
 # It olnly will install the plugins if exists any plugin name in the plugins node
 node['mconf-stats']['logstash']['plugins'].each do |plugin|
-  execute "sudo -u #{instance_configs['user']} #{home}/bin/plugin install #{plugin}"
+  execute "sudo -u #{instance_configs['user']} #{home}/bin/logstash-plugin install #{plugin}"
 end
 
 # If any modification in the elasticsearch data was needed due any new info inserted on

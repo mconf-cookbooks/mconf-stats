@@ -21,8 +21,11 @@ package 'filebeat' do
   version node['mconf-stats']['beats']['filebeat']['version']
 end
 
-certificate_path = "#{node['mconf-stats']['beats']['certificate_path']}/#{node['mconf-stats']['beats']['ssl_certificate']}"
-certificate_key = "#{node['mconf-stats']['beats']['certificate_path']}/#{node['mconf-stats']['beats']['ssl_key']}"
+certs_path = node['mconf-stats']['beats']['certificate_path']
+certificate_path = "#{certs_path}/#{node['mconf-stats']['beats']['ssl_certificate']}"
+key_path = "#{certs_path}/#{node['mconf-stats']['beats']['ssl_key']}"
+ca = node['mconf-stats']['beats']['ssl_ca']
+ca_path = ca.map { |ca| "#{certs_path}/#{ca}" }
 
 # Create the configuration file with the informations received
 template node['mconf-stats']['beats']['filebeat']['config_path'] do
@@ -33,9 +36,9 @@ template node['mconf-stats']['beats']['filebeat']['config_path'] do
     shipper: node['mconf-stats']['beats']['filebeat']['shipper'],
     ignore_older: node['mconf-stats']['beats']['filebeat']['ignore_older'],
     input_type: node['mconf-stats']['beats']['filebeat']['input_type'],
-    ca_authorities: certificate_path,
+    ca_authorities: ca_path,
     certificate: certificate_path,
-    certificate_key: certificate_key
+    certificate_key: key_path
   )
 end
 

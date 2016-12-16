@@ -36,20 +36,21 @@ default['mconf-stats']['domain']    = '192.168.0.100'
 default['mconf-stats']['java_pkg']  = 'openjdk-8-jre-headless'
 
 # Logstash
-default['mconf-stats']['logstash']['user']          = 'logstash'
-default['mconf-stats']['logstash']['group']         = 'logstash'
-default['mconf-stats']['logstash']['basedir']       = '/opt/logstash'
-default['mconf-stats']['logstash']['instance_name'] = 'mconf'
-default['mconf-stats']['logstash']['instance_home'] = "#{node['mconf-stats']['logstash']['basedir']}/#{node['mconf-stats']['logstash']['instance_name']}"
-default['mconf-stats']['logstash']['instance_conf'] = "#{node['mconf-stats']['logstash']['instance_home']}/etc/conf.d"
-default['mconf-stats']['logstash']['instance_config'] = "#{node['mconf-stats']['logstash']['instance_home']}/config"
-default['mconf-stats']['logstash']['instance_data'] = "#{node['mconf-stats']['logstash']['instance_home']}/data"
-default['mconf-stats']['logstash']['instance_log']  = "#{node['mconf-stats']['logstash']['instance_home']}/logs"
-default['mconf-stats']['logstash']['debug']         = false
-default['mconf-stats']['logstash']['install_type']  = 'tarball'
-default['mconf-stats']['logstash']['version']       = '5.0.0'
-default['mconf-stats']['logstash']['source_url']    = "https://artifacts.elastic.co/downloads/logstash/logstash-#{node['mconf-stats']['logstash']['version']}.tar.gz"
-default['mconf-stats']['logstash']['checksum']      = 'b5ff5336a49540510f415479deb64566c3b2dad1ce8856dde3df3b6ca1aa8d90'  #logstash-5.0.0.tar.gz
+default['mconf-stats']['logstash']['user']                = 'logstash'
+default['mconf-stats']['logstash']['group']               = 'logstash'
+default['mconf-stats']['logstash']['basedir']             = '/opt/logstash'
+default['mconf-stats']['logstash']['instance_name']       = 'mconf'
+default['mconf-stats']['logstash']['instance_home']       = "#{node['mconf-stats']['logstash']['basedir']}/#{node['mconf-stats']['logstash']['instance_name']}"
+default['mconf-stats']['logstash']['instance_conf']       = "#{node['mconf-stats']['logstash']['instance_home']}/etc/conf.d"
+default['mconf-stats']['logstash']['instance_config']     = "#{node['mconf-stats']['logstash']['instance_home']}/config"
+default['mconf-stats']['logstash']['instance_data']       = "#{node['mconf-stats']['logstash']['instance_home']}/data"
+default['mconf-stats']['logstash']['instance_log']        = "#{node['mconf-stats']['logstash']['instance_home']}/logs"
+default['mconf-stats']['logstash']['instance_template']   = "#{node['mconf-stats']['logstash']['instance_home']}/templates"
+default['mconf-stats']['logstash']['debug']               = false
+default['mconf-stats']['logstash']['install_type']        = 'tarball'
+default['mconf-stats']['logstash']['version']             = '5.0.0'
+default['mconf-stats']['logstash']['source_url']          = "https://artifacts.elastic.co/downloads/logstash/logstash-#{node['mconf-stats']['logstash']['version']}.tar.gz"
+default['mconf-stats']['logstash']['checksum']            = 'b5ff5336a49540510f415479deb64566c3b2dad1ce8856dde3df3b6ca1aa8d90'  #logstash-5.0.0.tar.gz
 
 default['mconf-stats']['logstash']['xms']           = '1536M'
 default['mconf-stats']['logstash']['xmx']           = '1536M'
@@ -59,9 +60,10 @@ default['mconf-stats']['logstash']['plugins']       = []
 default['mconf-stats']['logstash']['migration_dir'] = "#{node['mconf-stats']['logstash']['instance_home']}/etc/migration"
 default['mconf-stats']['logstash']['migration_configs'] = nil
 
-# Directory from this cookbooks where user's config files for logstash are.
-# All files in this directory will be automatically copied to logstash.
+# Directories from this cookbooks where user's config/template files for logstash are.
+# All files in these directories will be automatically copied to logstash.
 default['mconf-stats']['logstash']['user_configs'] = nil
+default['mconf-stats']['logstash']['user_templates'] = nil
 
 # Example:
 # [

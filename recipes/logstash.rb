@@ -17,6 +17,7 @@ home = node['mconf-stats']['logstash']['instance_home']
 conf_dir = node['mconf-stats']['logstash']['instance_conf']
 log_dir = node['mconf-stats']['logstash']['instance_log']
 config_dir = node['mconf-stats']['logstash']['instance_config']
+template_dir = node['mconf-stats']['logstash']['instance_template']
 migration_dir = node['mconf-stats']['logstash']['migration_dir']
 
 logstash_conf = ::File.join(config_dir, "logstash.yml")
@@ -77,7 +78,7 @@ end
 node.run_state['logstash_service'] = service_name
 include_recipe "mconf-stats::_lumberjack_certificates"
 
-# Copy user configuration files, if any
+# Copy user configuration files (inputs, filters and outputs), if any
 remote_directory conf_dir do
   source node['mconf-stats']['logstash']['user_configs']
   owner instance_configs['user']
@@ -89,6 +90,21 @@ remote_directory conf_dir do
   purge true
   action :create
   not_if { node['mconf-stats']['logstash']['user_configs'].nil? }
+end
+
+# Copy user templates files, if any
+# These are mainly used for setting mappings (index templates)
+remote_directory template_dir do
+  source node['mconf-stats']['logstash']['user_templates']
+  owner instance_configs['user']
+  group instance_configs['group']
+  mode '0755'
+  files_mode '0660'
+  files_owner instance_configs['user']
+  files_group instance_configs['group']
+  purge true
+  action :create
+  not_if { node['mconf-stats']['logstash']['user_templates'].nil? }
 end
 
 # Install plugins for logstash

@@ -1,4 +1,4 @@
-default['mconf-stats']['beats']['filebeat']['version']            = '5.0.1'
+default['mconf-stats']['beats']['filebeat']['version']            = '5.1.2'
 default['mconf-stats']['beats']['filebeat']['conf_dir']           = '/etc/filebeat'
 default['mconf-stats']['beats']['filebeat']['conf_file']          = ::File.join(node['mconf-stats']['beats']['filebeat']['conf_dir'], 'filebeat.yml')
 default['mconf-stats']['beats']['filebeat']['service_name']       = 'filebeat'

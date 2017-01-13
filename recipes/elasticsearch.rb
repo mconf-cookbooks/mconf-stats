@@ -24,11 +24,14 @@ directory backup_dir do
   owner node['mconf-stats']['elasticsearch']['user']
   group node['mconf-stats']['elasticsearch']['group']
   mode '0755'
+  recursive true
   action :create
   not_if { node['mconf-stats']['elasticsearch']['backup_repo'].nil? }
 end
 
 elasticsearch_install 'elasticsearch' do
+  type node['mconf-stats']['elasticsearch']['install_type']
+  version node['mconf-stats']['elasticsearch']['version']
   package_options "--force-confnew"
 end
 
@@ -37,12 +40,14 @@ end
 # instance already installed, for this reason the following method was inserted
 # to ensure the upgrade of the instance.
 #
-dpkg_package 'elasticsearch' do
-  action :install
-  options "--force-confnew"
-  source "/var/chef/cache/elasticsearch-#{version node['mconf-stats']['elasticsearch']['version']}.deb"
-  version version node['mconf-stats']['elasticsearch']['version']
-end
+# Let's test Elasticsearch cookbook first
+#
+# dpkg_package 'elasticsearch' do
+#   action :install
+#   options "--force-confnew"
+#   source "/var/chef/cache/elasticsearch-#{version node['mconf-stats']['elasticsearch']['version']}.deb"
+#   version version node['mconf-stats']['elasticsearch']['version']
+# end
 
 #
 # Restarting the instance to ensure that the new version is initialized
@@ -70,19 +75,20 @@ end
 elasticsearch_configure 'elasticsearch' do
     allocated_memory node['mconf-stats']['elasticsearch']['allocated_memory']
     configuration ({
-      'path.repo' => node['mconf-stats']['elasticsearch']['backup_repo'],
+      'path.repo' => backup_dir,
       'cluster.name' => node['mconf-stats']['elasticsearch']['cluster']['name'],
       'http.port' => node['mconf-stats']['elasticsearch']['http']['port'],
-      'discovery.zen.ping.multicast.enabled' => 'false',
       'network.host' => node['mconf-stats']['elasticsearch']['network']['host']
     })
 end
+
 elasticsearch_service 'elasticsearch'
 
 # Ensure elasticsearch is running, we need it now (kibana also needs it)
 service 'elasticsearch' do
   action :start
 end
+
 ruby_block "wait elasticsearch to start" do
   block do
     1.upto(30) do |i|

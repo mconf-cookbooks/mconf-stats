@@ -48,9 +48,9 @@ default['mconf-stats']['logstash']['instance_log']        = "#{node['mconf-stats
 default['mconf-stats']['logstash']['instance_template']   = "#{node['mconf-stats']['logstash']['instance_home']}/templates"
 default['mconf-stats']['logstash']['debug']               = false
 default['mconf-stats']['logstash']['install_type']        = 'tarball'
-default['mconf-stats']['logstash']['version']             = '5.0.0'
+default['mconf-stats']['logstash']['version']             = '5.1.2'
 default['mconf-stats']['logstash']['source_url']          = "https://artifacts.elastic.co/downloads/logstash/logstash-#{node['mconf-stats']['logstash']['version']}.tar.gz"
-default['mconf-stats']['logstash']['checksum']            = 'b5ff5336a49540510f415479deb64566c3b2dad1ce8856dde3df3b6ca1aa8d90'  #logstash-5.0.0.tar.gz
+default['mconf-stats']['logstash']['checksum']            = 'ffa4e370c6834f8e2591a23147a74a8cea04509efc6cf8c02b5cc563455c559c'  #logstash-5.1.2.tar.gz SHA256
 
 default['mconf-stats']['logstash']['xms']           = '1536M'
 default['mconf-stats']['logstash']['xmx']           = '1536M'

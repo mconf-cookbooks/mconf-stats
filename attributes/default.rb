@@ -110,12 +110,13 @@ default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']  =
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']          = 'lumberjack.key'
 
 
-# Elastic Search
-default['mconf-stats']['elasticsearch']['version']                   = "2.2.0"
-default['mconf-stats']['elasticsearch']['cluster']['name']           = "mconf_cluster"
+# Elasticsearch
+default['mconf-stats']['elasticsearch']['version']                   = "5.1.1"
+default['mconf-stats']['elasticsearch']['install_type']              = "package"
+default['mconf-stats']['elasticsearch']['cluster']['name']           = "mconf-cluster"
 default['mconf-stats']['elasticsearch']['node']['master']            = true
 default['mconf-stats']['elasticsearch']['node']['master_host']       = nil
-default['mconf-stats']['elasticsearch']['allocated_memory']          = "2048m"
+default['mconf-stats']['elasticsearch']['allocated_memory']          = "256m"
 default['mconf-stats']['elasticsearch']['network']['host']           = '0.0.0.0'
 default['mconf-stats']['elasticsearch']['http']['port']              = 9200
 default['mconf-stats']['elasticsearch']['user']                      = 'elasticsearch'

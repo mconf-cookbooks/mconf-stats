@@ -49,7 +49,7 @@ override['elasticsearch']['nginx']['ssl'] = {}
 
 
 # Kibana
-override['kibana']['version']                = "#{node['mconf-stats']['kibana']['version']}-linux-x64"
+override['kibana']['version']                = "#{node['mconf-stats']['kibana']['version']}-linux-x86_64"
 override['kibana']['java_webserver_port']    = node['mconf-stats']['kibana']['port']
 override['kibana']['webserver_port']         = node['mconf-stats']['kibana']['http_port']
 override['kibana']['install_path']           = node['mconf-stats']['kibana']['basedir']
@@ -60,11 +60,11 @@ override['kibana']['config']['kibana_index'] = node['mconf-stats']['kibana']['es
 
 override['kibana']['install_type']           = 'file'
 override['kibana']['file']['type']           = 'tgz'
-override['kibana']['file']['url']            = "https://download.elastic.co/kibana/kibana/kibana-#{node['kibana']['version']}.tar.gz"
+override['kibana']['file']['url']            = "https://artifacts.elastic.co/downloads/kibana/kibana-#{node['kibana']['version']}.tar.gz"
 override['kibana']['file']['checksum']       = node['mconf-stats']['kibana']['checksum']
 override['kibana']['file']['config']         = 'config/kibana.yml' # relative path of config file
 override['kibana']['install_java']           = false
-# override['kibana']['file']['config_template']          = 'kibana.yml.erb' # template to use for config
+override['kibana']['file']['config_template'] = 'kibana/kibana5.yml.erb' # template to use for config
 # override['kibana']['file']['config_template_cookbook'] = 'kibana_lwrp' # cookbook containing config template
 
 override['kibana']['webserver']          = 'nginx' # nginx or apache
@@ -73,7 +73,7 @@ override['kibana']['webserver_scheme']   = 'http://'
 # override['kibana']['webserver_aliases']  = [node['ipaddress']]
 # override['kibana']['webserver_listen']   = node['ipaddress']
 
-override['kibana']['es_server']          = '127.0.0.1'
+override['kibana']['es_server']          = node['mconf-stats']['kibana']['es_server']
 override['kibana']['es_port']            = node['mconf-stats']['elasticsearch']['http']['port']
 # override['kibana']['es_role']            = 'elasticsearch_server'
 # override['kibana']['es_scheme']          = 'http://'

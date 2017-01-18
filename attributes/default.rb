@@ -131,8 +131,8 @@ default['mconf-stats']['elasticsearch']['backup_repo']               = ['/opt/el
 
 # Kibana
 default['mconf-stats']['kibana']['basedir']   = '/opt'
-default['mconf-stats']['kibana']['version']   = '4.4.1'
-default['mconf-stats']['kibana']['checksum']   = 'fb536696b27b9807507c5d9014c90722e7b28cb2e068a80879cc9bb861316be1'  #kibana-4.4.1-linux-x64.tar.gz
+default['mconf-stats']['kibana']['version']   = '5.1.2'
+default['mconf-stats']['kibana']['checksum']   = 'c2e30b9581e7222e8f2536d4b08087dc282a6b31a24ec0e43b905507fe2f2b04'  # SHA256 of kibana-5.1.2-linux-x86_64.tar.gz
 
 default['mconf-stats']['kibana']['user']      = 'kibana'
 default['mconf-stats']['kibana']['group']     = 'kibana'
@@ -140,6 +140,9 @@ default['mconf-stats']['kibana']['port']      = 5601
 default['mconf-stats']['kibana']['http_port'] = 80
 default['mconf-stats']['kibana']['es_index']  = '.kibana'
 default['mconf-stats']['kibana']['data_bag']  = 'kibana'
+
+default['mconf-stats']['kibana']['es_server'] = '127.0.0.1'
+default['mconf-stats']['kibana']['bind_interface'] = node['ipaddress']
 
 # Elasticdump
 default['mconf-stats']['elasticdump']['version'] = '0.14.1'

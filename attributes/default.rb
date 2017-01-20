@@ -111,7 +111,7 @@ default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']          =
 
 
 # Elasticsearch
-default['mconf-stats']['elasticsearch']['version']                   = "5.1.1"
+default['mconf-stats']['elasticsearch']['version']                   = "5.1.2"
 default['mconf-stats']['elasticsearch']['install_type']              = "package"
 default['mconf-stats']['elasticsearch']['cluster']['name']           = "mconf-cluster"
 default['mconf-stats']['elasticsearch']['node']['master']            = true

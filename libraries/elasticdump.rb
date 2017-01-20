@@ -5,7 +5,7 @@ class Elasticdump
     <<-EOH
       elasticdump \
         --input=#{input_file} \
-        --output=http://#{host}/#{index} \
+        --output=#{host}/#{index} \
         --type=data
     EOH
   end

@@ -90,4 +90,5 @@ override['logstash-forwarder']['ssl_ca']           = "#{node['mconf-stats']['log
 
 # Elasticdump
 override['nodejs']['engine']         = 'node'
-override['nodejs']['install_method'] = 'package'
+override['nodejs']['install_method'] = 'source'
+override['nodejs']['repo']           = 'https://deb.nodesource.com/node_6.x'

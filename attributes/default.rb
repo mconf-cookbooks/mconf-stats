@@ -145,4 +145,4 @@ default['mconf-stats']['kibana']['es_server'] = '127.0.0.1'
 default['mconf-stats']['kibana']['bind_interface'] = node['ipaddress']
 
 # Elasticdump
-default['mconf-stats']['elasticdump']['version'] = '0.14.1'
+default['mconf-stats']['elasticdump']['version'] = '3.0.2'

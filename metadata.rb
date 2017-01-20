@@ -19,8 +19,8 @@ depends          'logstash-forwarder', '0.2.0'
 depends          'kibana_lwrp', '~> 3.0.2'
 depends          'libarchive', '~> 0.4.0' # for kibana_lwrp with chef 11
 depends          'hostsfile', '~> 2.4.5'
-depends          'nodejs', '~> 2.4.0'
+depends          'nodejs', '~> 3.0.0'
 depends          'apt', '>= 2.7.0'
-depends          'compat_resource', '= 12.5.10'
+depends          'compat_resource', '>= 12.5.10'
 
 recipe "mconf-stats::default", "Sets up an instance of Mconf-Stats"

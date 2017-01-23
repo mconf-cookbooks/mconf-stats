@@ -66,6 +66,11 @@ default['mconf-stats']['logstash']['migration_configs'] = nil
 default['mconf-stats']['logstash']['user_configs'] = nil
 default['mconf-stats']['logstash']['user_templates'] = nil
 
+default['mconf-stats']['logstash']['es_server']   = '127.0.0.1'
+default['mconf-stats']['logstash']['es_port']     = '9200'
+default['mconf-stats']['logstash']['es_index']    = 'logstash-%{+YYYY.MM.dd}'
+default['mconf-stats']['logstash']['es_template'] = 'index-template'
+
 # Example:
 # [
 #   {

@@ -21,6 +21,13 @@ config_dir = node['mconf-stats']['logstash']['instance_config']
 template_dir = node['mconf-stats']['logstash']['instance_template']
 migration_dir = node['mconf-stats']['logstash']['migration_dir']
 
+es_server = node['mconf-stats']['logstash']['es_server']
+es_port = node['mconf-stats']['logstash']['es_port']
+es_index = node['mconf-stats']['logstash']['es_index']
+es_template = node['mconf-stats']['logstash']['es_template']
+es_template_file = "#{es_template}.json"
+es_template_path = ::File.join(template_dir, es_template_file)
+
 logstash_conf = ::File.join(config_dir, "logstash.yml")
 jvm_conf = ::File.join(config_dir, "jvm.options")
 startup_conf = ::File.join(config_dir, "startup.options")
@@ -80,6 +87,8 @@ node.run_state['logstash_service'] = service_name
 include_recipe "mconf-stats::_lumberjack_certificates"
 
 # Copy user configuration files (inputs, filters and outputs), if any
+# These configuration files should not have any dynamic attribute such as
+# elasticsearch server address
 remote_directory conf_dir do
   source node['mconf-stats']['logstash']['user_configs']
   owner instance_configs['user']
@@ -91,6 +100,46 @@ remote_directory conf_dir do
   purge true
   action :create
   not_if { node['mconf-stats']['logstash']['user_configs'].nil? }
+end
+
+# Copy '01-input-beats.conf' template
+template "#{conf_dir}/01-input-beats-teste.conf" do
+  source "logstash/logstash_configs/01-input-beats.conf.erb"
+  mode '0660'
+  user instance_configs['user']
+  group instance_configs['group']
+  variables(
+    ssl_certificate: node.run_state['certificate_path'],
+    ssl_key: node.run_state['key_path'],
+    ssl_ca: node.run_state['ca_path'].first
+  )
+end
+
+# Copy '12-filter-elasticsearch-xml_cdr.conf' template
+template "#{conf_dir}/12-filter-freeswitch-xml_cdr-teste.conf" do
+  source "logstash/logstash_configs/12-filter-freeswitch-xml_cdr.conf.erb"
+  mode '0660'
+  user instance_configs['user']
+  group instance_configs['group']
+  variables(
+    es_server: es_server,
+    es_port: es_port
+  )
+end
+
+# Copy '23-output-elasticsearch.conf' template
+template "#{conf_dir}/23-output-elasticsearch-teste.conf" do
+  source "logstash/logstash_configs/23-output-elasticsearch.conf.erb"
+  mode '0660'
+  user instance_configs['user']
+  group instance_configs['group']
+  variables(
+    es_server: es_server,
+    es_port: es_port,
+    es_index: es_index,
+    es_template_path: es_template_path,
+    es_template: es_template
+  )
 end
 
 # Copy user templates files, if any

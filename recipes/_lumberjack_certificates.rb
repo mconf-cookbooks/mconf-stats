@@ -40,6 +40,10 @@ certificate_path = "#{path}/#{certificate_filename}"
 key_path = key_filename ? "#{path}/#{key_filename}" : nil
 ca_path = ca_filenames.map { |ca| "#{path}/#{ca}" }
 
+node.run_state['certificate_path'] = certificate_path
+node.run_state['key_path'] = key_path
+node.run_state['ca_path'] = ca_path
+
 
 directory path do
   owner target_user

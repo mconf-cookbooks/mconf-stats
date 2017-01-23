@@ -11,6 +11,10 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+include_recipe 'mconf-stats::common'
+
+include_recipe 'mconf-stats::elasticdump'
+
 install_type = 'file'
 
 group node['kibana']['group']
@@ -120,4 +124,8 @@ if File.exist?('/opt/kibana/current/optimize/.babelcache.json')
   execute "fixup kibana/optimize/.babelcache.json owner" do
    command "chown -R kibana:root /opt/kibana/current/optimize/.babelcache.json"
   end
+end
+
+service 'kibana' do
+  action :restart
 end

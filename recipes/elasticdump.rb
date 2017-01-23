@@ -10,6 +10,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+include_recipe 'mconf-stats::common'
+
 include_recipe 'nodejs'
 
 nodejs_npm 'elasticdump' do

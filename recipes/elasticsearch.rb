@@ -10,6 +10,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+include_recipe 'mconf-stats::common'
+
 elasticsearch_user 'elasticsearch' do
   username node['mconf-stats']['elasticsearch']['user']
   uid node['mconf-stats']['elasticsearch']['user_uid']

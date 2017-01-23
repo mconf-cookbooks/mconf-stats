@@ -44,3 +44,7 @@ service 'packetbeat' do
   supports :status => true, :restart => true
   action [:start, :enable]
 end
+
+service 'packetbeat' do
+  action :restart
+end

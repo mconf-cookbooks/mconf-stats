@@ -46,3 +46,7 @@ service 'filebeat' do
   supports :status => true, :restart => true
   action [:start, :enable]
 end
+
+service 'filebeat' do
+  action :restart
+end

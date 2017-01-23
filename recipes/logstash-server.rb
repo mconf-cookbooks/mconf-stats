@@ -10,6 +10,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+include_recipe 'mconf-stats::common'
+
 node.run_state['lumberjack_for'] = :logstash_server
 
 include_recipe 'mconf-stats::logstash'

@@ -138,3 +138,7 @@ execute "migrations" do
   command "sudo -u #{node['mconf-stats']['logstash']['user']} #{home}/bin/logstash agent -f #{node['mconf-stats']['logstash']['migration_dir']}"
   not_if { node['mconf-stats']['logstash']['migration_configs'].nil? }
 end
+
+service service_name do
+  action :restart
+end

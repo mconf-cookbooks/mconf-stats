@@ -14,6 +14,7 @@ instance_name = node['mconf-stats']['logstash']['instance_name']
 instance_configs = node['logstash']['instance'][instance_name]
 service_name = "logstash_#{instance_name}"
 home = node['mconf-stats']['logstash']['instance_home']
+bin_dir = node['mconf-stats']['logstash']['instance_bin']
 conf_dir = node['mconf-stats']['logstash']['instance_conf']
 log_dir = node['mconf-stats']['logstash']['instance_log']
 config_dir = node['mconf-stats']['logstash']['instance_config']
@@ -63,7 +64,7 @@ template startup_conf do
 end
 
 execute 'system-install' do
-  command "#{home}/bin/system-install"
+  command "#{bin_dir}/system-install"
   action :nothing
   notifies :restart, "service[#{service_name}]", :delayed
 end
@@ -108,9 +109,12 @@ remote_directory template_dir do
 end
 
 # Install plugins for logstash
-# It olnly will install the plugins if exists any plugin name in the plugins node
+# It only will install the plugins if exists any plugin name in the plugins node
 node['mconf-stats']['logstash']['plugins'].each do |plugin|
-  execute "sudo -u #{instance_configs['user']} #{home}/bin/logstash-plugin install #{plugin}"
+  execute "installing plugin #{plugin}" do
+    command "sudo ./logstash-plugin install #{plugin}"
+    cwd "#{bin_dir}"
+  end
 end
 
 # If any modification in the elasticsearch data was needed due any new info inserted on
@@ -132,10 +136,10 @@ remote_directory migration_dir do
 end
 
 # Run a single instance of logstash with the configs located into the migration folder
-# created or updated in the command above. After finished the run the instance ends. 
+# created or updated in the command above. After finished the run the instance ends.
 Chef::Log.info('Running logstash with ElasticSearch migration files')
 execute "migrations" do
-  command "sudo -u #{node['mconf-stats']['logstash']['user']} #{home}/bin/logstash agent -f #{node['mconf-stats']['logstash']['migration_dir']}"
+  command "sudo -u #{node['mconf-stats']['logstash']['user']} #{bin_dir}/logstash agent -f #{node['mconf-stats']['logstash']['migration_dir']}"
   not_if { node['mconf-stats']['logstash']['migration_configs'].nil? }
 end
 

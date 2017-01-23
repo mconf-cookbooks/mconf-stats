@@ -41,6 +41,7 @@ default['mconf-stats']['logstash']['group']               = 'logstash'
 default['mconf-stats']['logstash']['basedir']             = '/opt/logstash'
 default['mconf-stats']['logstash']['instance_name']       = 'mconf'
 default['mconf-stats']['logstash']['instance_home']       = "#{node['mconf-stats']['logstash']['basedir']}/#{node['mconf-stats']['logstash']['instance_name']}"
+default['mconf-stats']['logstash']['instance_bin']        = "#{node['mconf-stats']['logstash']['instance_home']}/bin"
 default['mconf-stats']['logstash']['instance_conf']       = "#{node['mconf-stats']['logstash']['instance_home']}/etc/conf.d"
 default['mconf-stats']['logstash']['instance_config']     = "#{node['mconf-stats']['logstash']['instance_home']}/config"
 default['mconf-stats']['logstash']['instance_data']       = "#{node['mconf-stats']['logstash']['instance_home']}/data"

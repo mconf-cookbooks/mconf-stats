@@ -1,3 +1,6 @@
+# Beats
+
+# Beats generic settings
 default['mconf-stats']['beats']['install_certificates'] = true
 default['mconf-stats']['beats']['install_packetbeat']   = false
 default['mconf-stats']['beats']['install_filebeat']     = false

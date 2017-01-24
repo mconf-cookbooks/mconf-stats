@@ -10,6 +10,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Default recipe installs Logstash, Elasticsearch and Kibana
 include_recipe 'mconf-stats::logstash-server'
 include_recipe 'mconf-stats::elasticsearch'
 include_recipe 'mconf-stats::kibana'

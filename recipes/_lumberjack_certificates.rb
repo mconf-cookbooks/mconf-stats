@@ -10,7 +10,9 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-# for when installing logstash server with a lumberjack input
+# For when installing Logstash server with Lumberjack/Beats input
+
+# The only 'lumberjack_for' value currently used is :logstash_server
 if node.run_state['lumberjack_for'] == :forwarder
   path = node['mconf-stats']['logstash-forwarder']['certificate_path']
   certificate_filename = node['mconf-stats']['logstash-forwarder']['ssl_certificate']
@@ -36,6 +38,8 @@ else
   target_user = node['mconf-stats']['logstash']['user']
   target_group = node['mconf-stats']['logstash']['group']
 end
+
+# Setup paths and files for SSL certificates and key
 certificate_path = "#{path}/#{certificate_filename}"
 key_path = key_filename ? "#{path}/#{key_filename}" : nil
 ca_path = ca_filenames.map { |ca| "#{path}/#{ca}" }
@@ -44,7 +48,7 @@ node.run_state['certificate_path'] = certificate_path
 node.run_state['key_path'] = key_path
 node.run_state['ca_path'] = ca_path
 
-
+# Create directory which will hold the certificate
 directory path do
   owner target_user
   group target_group
@@ -53,8 +57,7 @@ directory path do
   action :create
 end
 
-
-# Read the certificates from a data bag and save to files
+# Decode Base64-encoded SSL related files from data_bags
 # Note: adapted code from https://github.com/rackspace-cookbooks/elkstack/blob/master/recipes/_lumberjack_secrets.rb
 
 begin
@@ -86,6 +89,7 @@ else
   Chef::Log.warn('Could not find an encrypted or unencrypted data bag to use as a lumberjack keypair')
 end
 
+# Create SSL Key file if a path for one exists
 unless key_path.nil?
   file key_path do
     content node.run_state['lumberjack_decoded_key']
@@ -97,6 +101,7 @@ unless key_path.nil?
   end
 end
 
+# Create SSL certificate file
 file certificate_path do
   content node.run_state['lumberjack_decoded_certificate']
   owner target_user
@@ -106,6 +111,7 @@ file certificate_path do
   notifies :restart, "service[#{node.run_state['logstash_service']}]", :delayed
 end
 
+# Create SSL certificate authorities files
 ca_path.zip(node.run_state['lumberjack_decoded_ca']).each do |ca_file, ca_decoded|
   file ca_file do
     content ca_decoded

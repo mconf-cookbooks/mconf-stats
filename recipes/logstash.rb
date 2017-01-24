@@ -37,7 +37,7 @@ es_template = node['mconf-stats']['logstash']['es_template']
 es_template_file = "#{es_template}.json"
 es_template_path = ::File.join(template_dir, es_template_file)
 
-# Create Logstash instance using chef-logstash cookbook resource
+# Create Logstash instance using logstash cookbook resource
 logstash_instance instance_name do
   create_account true
   action :create

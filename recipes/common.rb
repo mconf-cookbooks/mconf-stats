@@ -10,6 +10,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Install all necessary packages
 %W{git curl #{node['mconf-stats']['java_pkg']}}.each do |pkg|
   package pkg
 end

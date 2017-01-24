@@ -8,7 +8,7 @@
 
 # Logstash
 
-# Logstash chef-logstash cookbook override settings
+# Cookbook logstash override settings
 # Source: https://github.com/lusis/chef-logstash
 
 logstash_instance = node['mconf-stats']['logstash']['instance_name']
@@ -35,7 +35,7 @@ override['logstash']['instance'][logstash_instance]['ipv4_only']         = node[
 
 # Elasticsearch
 
-# Elasticsearch cookbook-elasticsearch cookbook override settings
+# Cookbook elasticsearch override settings
 # Source: https://github.com/elastic/cookbook-elasticsearch
 
 override['elasticsearch']['version']          = node['mconf-stats']['elasticsearch']['version']
@@ -59,7 +59,7 @@ override['elasticsearch']['nginx']['ssl'] = {}
 
 # Kibana
 
-# Kibana kibana_lwrp cookbook override settings
+# Cookbook kibana_lwrp override settings
 # Source: https://github.com/lusis/chef-kibana
 
 override['kibana']['version']                = "#{node['mconf-stats']['kibana']['version']}-linux-x86_64"
@@ -91,7 +91,11 @@ override['kibana']['es_port']            = node['mconf-stats']['elasticsearch'][
 # override['kibana']['es_role']            = 'elasticsearch_server'
 # override['kibana']['es_scheme']          = 'http://'
 
-# Logstash-forwarder
+# Logstash-forwarder (obsolete)
+
+# Cookbook logstash-forwarder override settings
+# Source: https://github.com/parallels-cookbooks/cookbook-logstash-forwarder
+
 override['logstash-forwarder']['service_name']     = node['mconf-stats']['logstash-forwarder']['service_name']
 override['logstash-forwarder']['logstash_servers'] = node['mconf-stats']['logstash-forwarder']['logstash_servers']
 override['logstash-forwarder']['timeout']          = node['mconf-stats']['logstash-forwarder']['timeout']
@@ -102,7 +106,7 @@ override['logstash-forwarder']['ssl_ca']           = "#{node['mconf-stats']['log
 
 # Elasticdump
 
-# Node.js nodejs cookbook override settings
+# Cookbook nodejs override settings
 # Source: https://github.com/redguide/nodejs
 
 override['nodejs']['engine']         = 'node'

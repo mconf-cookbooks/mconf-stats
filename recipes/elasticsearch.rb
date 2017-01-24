@@ -34,7 +34,7 @@ directory backup_dir do
   not_if { node['mconf-stats']['elasticsearch']['backup_repo'].nil? }
 end
 
-# Install Elasticsearch using cookbook-elasticsearch cookbook resource
+# Install Elasticsearch using elasticsearch cookbook resource
 elasticsearch_install 'elasticsearch' do
   type node['mconf-stats']['elasticsearch']['install_type']
   version node['mconf-stats']['elasticsearch']['version']
@@ -61,7 +61,7 @@ ruby_block "wait elasticsearch to start" do
   action :run
 end
 
-# Configure Elasticsearch using cookbook-elasticsearch cookbook resource
+# Configure Elasticsearch using elasticsearch cookbook resource
 elasticsearch_configure 'elasticsearch' do
     allocated_memory node['mconf-stats']['elasticsearch']['allocated_memory']
     configuration ({
@@ -72,7 +72,7 @@ elasticsearch_configure 'elasticsearch' do
     })
 end
 
-# Create Elasticsearch service using cookbook-elasticsearch cookbook resource
+# Create Elasticsearch service using elasticsearch cookbook resource
 elasticsearch_service 'elasticsearch'
 
 # Start Elasticsearch service
@@ -80,7 +80,7 @@ service 'elasticsearch' do
   action :start
 end
 
-# Ensure Elasticsearch is running. We need it now (kibana also does).
+# Ensure Elasticsearch is running. We need it now (Kibana also does).
 # Wait up to 30 seconds until Elasticsearch starts
 ruby_block "wait elasticsearch to start" do
   block do

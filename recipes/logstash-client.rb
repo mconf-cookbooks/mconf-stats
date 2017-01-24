@@ -10,6 +10,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# This recipe is obsolete. It has been replaced by Beats.
+
 node.run_state['lumberjack_for'] = :logstash_client
 
 include_recipe 'mconf-stats::logstash'

@@ -36,8 +36,17 @@ default['mconf-stats']['domain']    = '192.168.0.100'
 default['mconf-stats']['java_pkg']  = 'openjdk-8-jre-headless'
 
 # Logstash
+
+# Logstash general settings
 default['mconf-stats']['logstash']['user']                = 'logstash'
 default['mconf-stats']['logstash']['group']               = 'logstash'
+default['mconf-stats']['logstash']['debug']               = false
+default['mconf-stats']['logstash']['xms']           = '1536M' # It's highly advised to set Xms and Xmx to the same value
+default['mconf-stats']['logstash']['xmx']           = '1536M'
+default['mconf-stats']['logstash']['log_file']      = 'logstash.log'
+default['mconf-stats']['logstash']['plugins']       = []
+
+# Logstash paths settings
 default['mconf-stats']['logstash']['basedir']             = '/opt/logstash'
 default['mconf-stats']['logstash']['instance_name']       = 'mconf'
 default['mconf-stats']['logstash']['instance_home']       = "#{node['mconf-stats']['logstash']['basedir']}/#{node['mconf-stats']['logstash']['instance_name']}"
@@ -47,63 +56,28 @@ default['mconf-stats']['logstash']['instance_config']     = "#{node['mconf-stats
 default['mconf-stats']['logstash']['instance_data']       = "#{node['mconf-stats']['logstash']['instance_home']}/data"
 default['mconf-stats']['logstash']['instance_log']        = "#{node['mconf-stats']['logstash']['instance_home']}/logs"
 default['mconf-stats']['logstash']['instance_template']   = "#{node['mconf-stats']['logstash']['instance_home']}/templates"
-default['mconf-stats']['logstash']['debug']               = false
+
+# Logstash installation settings
 default['mconf-stats']['logstash']['install_type']        = 'tarball'
 default['mconf-stats']['logstash']['version']             = '5.1.2'
 default['mconf-stats']['logstash']['source_url']          = "https://artifacts.elastic.co/downloads/logstash/logstash-#{node['mconf-stats']['logstash']['version']}.tar.gz"
-default['mconf-stats']['logstash']['checksum']            = 'ffa4e370c6834f8e2591a23147a74a8cea04509efc6cf8c02b5cc563455c559c'  #logstash-5.1.2.tar.gz SHA256
+default['mconf-stats']['logstash']['checksum']            = 'ffa4e370c6834f8e2591a23147a74a8cea04509efc6cf8c02b5cc563455c559c'  # SHA256 of logstash-5.1.2.tar.gz
 
-default['mconf-stats']['logstash']['xms']           = '1536M'
-default['mconf-stats']['logstash']['xmx']           = '1536M'
-default['mconf-stats']['logstash']['log_file']      = 'logstash.log'
-default['mconf-stats']['logstash']['plugins']       = []
-
+# Logstash migration settings
 default['mconf-stats']['logstash']['migration_dir'] = "#{node['mconf-stats']['logstash']['instance_home']}/etc/migration"
 default['mconf-stats']['logstash']['migration_configs'] = nil
 
-# Directories from this cookbooks where user's config/template files for logstash are.
-# All files in these directories will be automatically copied to logstash.
-default['mconf-stats']['logstash']['user_configs'] = nil
-default['mconf-stats']['logstash']['user_templates'] = nil
+# Logstash mconf-stats cookbook settings
+default['mconf-stats']['logstash']['user_configs'] = nil # Directories from this cookbooks where user's config/template files for logstash are.
+default['mconf-stats']['logstash']['user_templates'] = nil # All files in these directories will be automatically copied to logstash.
 
+# Logstash Elasticsearch settings
 default['mconf-stats']['logstash']['es_server']   = '127.0.0.1'
 default['mconf-stats']['logstash']['es_port']     = '9200'
 default['mconf-stats']['logstash']['es_index']    = 'logstash-%{+YYYY.MM.dd}'
 default['mconf-stats']['logstash']['es_template'] = 'index-template'
 
-# Example:
-# [
-#   {
-#     "name": "0-input-main.conf",
-#     "path": "/my/file/1.log",
-#     "type": "rails",
-#     "codec": "json"
-#   }
-# ]
-default['mconf-stats']['logstash']['inputs']['files'] = []
-
-# Example:
-# [
-#   {
-#     "name": "9-output-elasticsearch.conf",
-#     "host": "localhost",
-#     "cluster": "mconf_cluster",
-#     "embedded": false,
-#     "bind_host": null,
-#     "es_index": null
-#   }
-# ]
-default['mconf-stats']['logstash']['outputs']['elasticsearch'] = []
-
-# Example:
-# {
-#   "name": "9-output-stdout.conf",
-#   "codec": "rubydebug"
-# }
-default['mconf-stats']['logstash']['outputs']['stdout'] = {}
-
-# Lumberjack input
-# Certificates are taken from the data bag and saved to disk in the paths specified below
+# Logstash Lumberjack settings
 default['mconf-stats']['logstash']['inputs']['lumberjack']                     = {}
 default['mconf-stats']['logstash']['inputs']['lumberjack']['name']             = nil
 default['mconf-stats']['logstash']['inputs']['lumberjack']['host']             = '0.0.0.0'
@@ -114,7 +88,6 @@ default['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path'] =
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_ca']           = ['CA.crt']
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']  = 'lumberjack.crt'
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']          = 'lumberjack.key'
-
 
 # Elasticsearch
 default['mconf-stats']['elasticsearch']['version']                   = "5.1.2"

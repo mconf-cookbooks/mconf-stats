@@ -6,6 +6,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Logstash
+
+# Logstash chef-logstash cookbook override settings
+# Source: https://github.com/lusis/chef-logstash
+
 logstash_instance = node['mconf-stats']['logstash']['instance_name']
 override['logstash']['instance'][logstash_instance]['user']           = node['mconf-stats']['logstash']['user']
 override['logstash']['instance'][logstash_instance]['group']          = node['mconf-stats']['logstash']['group']

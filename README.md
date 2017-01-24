@@ -1,17 +1,35 @@
 mconf-stats Cookbook
 =================
 
-Install Mconf-Stats, Mconf's ELK stack ([ElasticSearch](https://www.elastic.co/products/elasticsearch), [Logstash](https://www.elastic.co/products/logstash), [Kibana](https://www.elastic.co/products/kibana)).
+Installs Mconf-stats - Mconf's Elastic stack ([Beats](https://www.elastic.co/products/beats), [ElasticSearch](https://www.elastic.co/products/elasticsearch), [Logstash](https://www.elastic.co/products/logstash), [Kibana](https://www.elastic.co/products/kibana)).
 
 Requirements
 ------------
 
-Tested on Ubuntu 14.04.
+Filebeat and Packetbeat tested on Ubuntu 14.04.
+Other componentes tested on Ubuntu 16.04.
 
-Usage
+It has been tested with Chef 12.5.1, but should work with Chef 12.X as well.
+
+Supported versions
 -----
 
-#### mconf-stats::default
+The versions currently supported by this cookbook are:
+
+* Filebeat: 5.1.2.
+* Packetbeat: 5.1.2.
+* Logstash: 5.1.2.
+* Elasticsearch: 5.1.2.
+* Kibana: 5.1.2.
+* Elasticdump: 3.0.2.
+
+Recipes
+-----
+
+#### default
+
+Default recipe. It installs Logstash, Elasticsearch and Kibana on the same machine.
+Other packages are also installed (eg., Node.JS and Elasticdump).
 
 Configuration example:
 
@@ -22,40 +40,43 @@ Configuration example:
     "app_group": "vagrant"
   },
   "mconf-stats": {
-    "domain": "10.0.3.2",
+    "domain": "10.0.1.2",
     "logstash": {
       "debug": true,
+      "user_configs": "logstash_configs",
+      "user_templates": "logstash_templates",
       "inputs": {
         "lumberjack": {
-          "name": "1-input-lumberjack.conf"
+          "ssl_ca": ["certificate-authority.your.domain.crt"]
         }
       },
-      "outputs": {
-        "elasticsearch": [
-          {
-            "name": "8-output-elasticsearch.conf",
-            "host": "localhost",
-            "cluster": "mconf_cluster",
-            "embedded": false,
-            "bind_host": null,
-            "es_index": null
-          }
-        ],
-        "stdout": {
-          "name": "9-output-stdout.conf",
-          "codec": "rubydebug"
-        }
-      }
+      "plugins": ["logstash-filter-elasticsearch"],
+      "es_server": "elasticsearch-server.your.domain",
+      "es_port": "9200",
+      "es_index": "logstash-%{+YYYY.MM.dd}",
+      "es_template": "index-template-name"
     },
     "elasticsearch": {
+      "allocated_memory": "256m",
       "cluster": {
         "name": "mconf_cluster"
+      },
+      "disk_threshold": {
+          "enabled": false
       }
+    },
+    "kibana": {
+      "bind_interface": "127.0.0.1",
+      "es_server": "elasticsearch-server.your.domain",
+      "es_index": ".kibana"
     }
   },
-  "description": "My mconf-stats server",
+
+  "description": "Elastic stack server",
+
   "override_attributes": {
   },
+
   "name": "my-mconf-stats",
   "run_list": [
     "recipe[mconf-stats::default]"
@@ -63,9 +84,11 @@ Configuration example:
 }
 ```
 
-The secrets for lumberjack are expected to be at a data bag `lumberjack/secrets.json` by default.
+The secrets for Lumberjack (for securing Logstash inputs) are expected to be at a data bag `lumberjack/secrets.json` by default.
 
-#### mconf-stats::forwarder
+#### beats
+
+It installs Filebeat and Packetbeat on the same machine.
 
 Configuration example:
 
@@ -76,29 +99,69 @@ Configuration example:
     "app_group": "vagrant"
   },
   "mconf-stats": {
-    "domain": "10.0.3.1",
-    "logstash-forwarder": {
-      "logstash_servers": [ "fake-elk.test.local:5960" ],
-      "logstash_servers_mappings": {
-        "10.0.3.2": "fake-elk.test.local"
-      },
-      "logs": [
-        {
-          "name": "mconf-web",
-          "paths": ["/var/www/mconf-web/current/log/lograge_development.log"],
-          "fields": { "types": "rails" }
-        }
-      ]
+    "domain": "10.0.1.1",
+    "beats": {
+      "logstash_host": "logstash-server.your.domain:5044",
+      "redis_port": "6379",
+      "install_packetbeat": true,
+      "install_filebeat": true,
+      "filebeat": {
+        "prospectors": [
+          {
+            "paths": ["/path/to/files.xml"],
+            "options": {
+                "multiline.pattern": "'\\<?xml\\<'",
+                "multiline.negate": true,
+                "multiline.match": "after"
+            },
+            "ignore_older": "24h",
+            "input_type": "log",
+            "document_type": "my_files"
+          },
+          {
+            "paths": ["/path/to/other/files1/*", "/path/to/other/files2/*"],
+            "input_type": "log",
+            "document_type": "my_other_files"
+          },
+          {
+            "paths": ["/still/other/files"],
+            "input_type": "log",
+            "document_type": "still_other_files"
+          }
+        ]
+      }
     }
   },
-  "description": "Log forwarder on my mconf-web",
+
+  "description": "Beats monitored server",
+
   "override_attributes": {
   },
-  "name": "my-mconf-web-solo-forwarder",
+
+  "name": "my-mconf-beats",
   "run_list": [
-    "recipe[mconf-stats::forwarder]"
+    "recipe[mconf-stats::beats]"
   ]
 }
 ```
 
-The secrets for lumberjack are expected to be at a data bag `logstash-forwarder/secrets.json` by default.
+#### Other Recipes
+
+It is also possible to install just one component or another by using the appropriate recipe.
+The individual available recipes are:
+
+* _mconf-stats::filebeat_
+* _mconf-stats::packetbeat_
+* _mconf-stats::logstash-server_
+* _mconf-stats::elasticsearch_
+* _mconf-stats::kibana_
+
+For instance, you can install only Logstash by adding:
+
+```json
+"run_list": ["recipe[mconf-stats::logstash-server]"]
+```
+
+on your `solo.json`. The settings are the same as those shown above.
+
+> Note that it is _logstash-server_, not just _logstash_.

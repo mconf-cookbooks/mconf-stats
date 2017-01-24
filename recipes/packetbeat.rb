@@ -10,17 +10,20 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-# Setup the secrets for logstash
+# Setup the secrets for Logstash
 # It will only setup if the data bags with the secrets exist, otherwise won't do anything
 include_recipe "mconf-stats::_beats_certificates"
 
+# Add Beats official repository and update apt-get
 include_recipe "mconf-stats::_install_beats_packages"
 
+# Install Packetbeat via package repository
 package 'packetbeat' do
   options "-o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'"
   version node['mconf-stats']['beats']['packetbeat']['version']
 end
 
+# Setup SSL certificate paths
 certs_path = node['mconf-stats']['beats']['certificate_path']
 certificate_path = "#{certs_path}/#{node['mconf-stats']['beats']['ssl_certificate']}"
 key_path = "#{certs_path}/#{node['mconf-stats']['beats']['ssl_key']}"
@@ -40,11 +43,13 @@ template node['mconf-stats']['beats']['packetbeat']['config_path'] do
   )
 end
 
+# Setup Filebeat service and start it
 service 'packetbeat' do
   supports :status => true, :restart => true
   action [:start, :enable]
 end
 
+# Always restart the service at the end of the recipe
 service 'packetbeat' do
   action :restart
 end

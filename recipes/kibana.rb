@@ -11,14 +11,19 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Install necessary packages (such as Java)
 include_recipe 'mconf-stats::common'
 
+# Install Elasticdump
 include_recipe 'mconf-stats::elasticdump'
 
+# Installation method can be either file or git
 install_type = 'file'
 
+# Create Kibana group
 group node['kibana']['group']
 
+# Create Kibana user
 user node['kibana']['user'] do
   comment 'Kibana Server'
   gid node['kibana']['group']
@@ -27,6 +32,7 @@ user node['kibana']['user'] do
   system true
 end
 
+# Install Kibana using kibana_lwrp cookbook resource
 kibana_install 'kibana' do
   user node['kibana']['user']
   group node['kibana']['group']
@@ -42,7 +48,7 @@ es_server = "#{node['kibana']['es_scheme']}#{node['kibana']['es_server']}:#{node
 
 kibana_bin = "#{node['kibana']['install_dir']}/current/bin/kibana"
 
-# Uses variables and template from kibana_lwrp
+# Install template for Kibana main configuration file
 template kibana_config do
   source node['kibana'][install_type]['config_template']
   mode '0644'
@@ -56,7 +62,7 @@ template kibana_config do
   )
 end
 
-# Create the directory for the logfile
+# Create directory for the logfile
 directory File.join(node['kibana']['install_dir'], 'current', 'log') do
   owner node['mconf-stats']['kibana']['user']
   group node['mconf-stats']['kibana']['group']
@@ -65,12 +71,13 @@ directory File.join(node['kibana']['install_dir'], 'current', 'log') do
   action :create
 end
 
-# Service is taken mostly from the cookbook 'kibana' (not 'kibana_lwrp')
+# Setup Kibana service
 service 'kibana' do
   supports start: true, restart: true, reload: true, stop: true, status: true
   action :nothing
 end
 
+# Install template for Kibana service file
 template '/etc/systemd/system/kibana.service' do
   source 'kibana/kibana.service.erb'
   variables(
@@ -82,7 +89,7 @@ template '/etc/systemd/system/kibana.service' do
   notifies :restart, 'service[kibana]', :delayed
 end
 
-# Accept data bags to populate Kibana
+# Accept data_bags to populate Kibana
 bag_name = node['mconf-stats']['kibana']['data_bag']
 begin
   kibana_bag = Chef::DataBag.load(bag_name)
@@ -91,6 +98,8 @@ rescue
   kibana_bag = []
   Chef::Log.warn("Could not find unencrypted data bag #{bag_name}")
 end
+
+# Populate Kibana index in Elasticsearch using Elasticdump
 kibana_bag.each_pair do |name, url|
   items = Chef::DataBagItem.load(bag_name, name)
   # so we get only the data we need, not all object
@@ -109,7 +118,7 @@ kibana_bag.each_pair do |name, url|
   end
 end
 
-# In the newest versions of kibana this file is created and used in the initialization
+# In the newest versions of Kibana this file is created and used in the initialization
 # of the instance. But the last version of the cookbook don't treat this file very well.
 # So we need to change the owner of this file.
 
@@ -126,6 +135,7 @@ if File.exist?('/opt/kibana/current/optimize/.babelcache.json')
   end
 end
 
+# Always restart the service at the end of the recipe
 service 'kibana' do
   action :restart
 end

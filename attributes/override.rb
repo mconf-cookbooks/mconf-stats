@@ -57,8 +57,11 @@ override['elasticsearch']['transport']['tcp']['port'] = "9300-9400"
 # To prevent an error in the elasticsearch cookbook
 override['elasticsearch']['nginx']['ssl'] = {}
 
-
 # Kibana
+
+# Kibana kibana_lwrp cookbook override settings
+# Source: https://github.com/lusis/chef-kibana
+
 override['kibana']['version']                = "#{node['mconf-stats']['kibana']['version']}-linux-x86_64"
 override['kibana']['java_webserver_port']    = node['mconf-stats']['kibana']['port']
 override['kibana']['webserver_port']         = node['mconf-stats']['kibana']['http_port']
@@ -87,7 +90,6 @@ override['kibana']['es_server']          = node['mconf-stats']['kibana']['es_ser
 override['kibana']['es_port']            = node['mconf-stats']['elasticsearch']['http']['port']
 # override['kibana']['es_role']            = 'elasticsearch_server'
 # override['kibana']['es_scheme']          = 'http://'
-
 
 # Logstash-forwarder
 override['logstash-forwarder']['service_name']     = node['mconf-stats']['logstash-forwarder']['service_name']

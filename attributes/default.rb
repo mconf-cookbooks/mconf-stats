@@ -110,19 +110,27 @@ default['mconf-stats']['elasticsearch']['disk_threshold']['high']    = '90%'
 default['mconf-stats']['elasticsearch']['backup_repo']               = ['/opt/elasticsearch/snapshots']
 
 # Kibana
-default['mconf-stats']['kibana']['basedir']   = '/opt'
-default['mconf-stats']['kibana']['version']   = '5.1.2'
-default['mconf-stats']['kibana']['checksum']   = 'c2e30b9581e7222e8f2536d4b08087dc282a6b31a24ec0e43b905507fe2f2b04'  # SHA256 of kibana-5.1.2-linux-x86_64.tar.gz
 
+# Kibana general settings
 default['mconf-stats']['kibana']['user']      = 'kibana'
 default['mconf-stats']['kibana']['group']     = 'kibana'
 default['mconf-stats']['kibana']['port']      = 5601
 default['mconf-stats']['kibana']['http_port'] = 80
-default['mconf-stats']['kibana']['es_index']  = '.kibana'
+default['mconf-stats']['kibana']['bind_interface'] = node['ipaddress']
+
+# Kibana paths settings
+default['mconf-stats']['kibana']['basedir']   = '/opt'
+
+# Kibana installation settings
+default['mconf-stats']['kibana']['version']   = '5.1.2'
+default['mconf-stats']['kibana']['checksum']   = 'c2e30b9581e7222e8f2536d4b08087dc282a6b31a24ec0e43b905507fe2f2b04'  # SHA256 of kibana-5.1.2-linux-x86_64.tar.gz
+
+# Kibana mconf-stats cookbook settings
 default['mconf-stats']['kibana']['data_bag']  = 'kibana'
 
+# Kibana Elasticsearch settings
+default['mconf-stats']['kibana']['es_index']  = '.kibana'
 default['mconf-stats']['kibana']['es_server'] = '127.0.0.1'
-default['mconf-stats']['kibana']['bind_interface'] = node['ipaddress']
 
 # Elasticdump
 

@@ -1,7 +1,7 @@
 mconf-stats Cookbook
 =================
 
-Installs Mconf-stats - Mconf's Elastic stack ([Beats](https://www.elastic.co/products/beats), [ElasticSearch](https://www.elastic.co/products/elasticsearch), [Logstash](https://www.elastic.co/products/logstash), [Kibana](https://www.elastic.co/products/kibana)).
+Installs Mconf-stats - Mconf's Elastic stack ([Beats](https://www.elastic.co/products/beats), [Elasticsearch](https://www.elastic.co/products/elasticsearch), [Logstash](https://www.elastic.co/products/logstash), [Kibana](https://www.elastic.co/products/kibana)).
 
 Requirements
 ------------

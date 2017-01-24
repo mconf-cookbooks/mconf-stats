@@ -10,8 +10,10 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Install necessary packages (such as Java)
 include_recipe 'mconf-stats::common'
 
+# Create Elasticsearch user and group
 elasticsearch_user 'elasticsearch' do
   username node['mconf-stats']['elasticsearch']['user']
   uid node['mconf-stats']['elasticsearch']['user_uid']
@@ -19,9 +21,10 @@ elasticsearch_user 'elasticsearch' do
   gid node['mconf-stats']['elasticsearch']['group_gid']
 end
 
-# Creates the directory used for store the snapshots in all nodes.
+# Create the directory used for store the snapshots in all nodes.
 backup_dir = node['mconf-stats']['elasticsearch']['backup_repo'][0]
 
+# Create the directory to hold backup data
 directory backup_dir do
   owner node['mconf-stats']['elasticsearch']['user']
   group node['mconf-stats']['elasticsearch']['group']
@@ -31,36 +34,20 @@ directory backup_dir do
   not_if { node['mconf-stats']['elasticsearch']['backup_repo'].nil? }
 end
 
+# Install Elasticsearch using cookbook-elasticsearch cookbook resource
 elasticsearch_install 'elasticsearch' do
   type node['mconf-stats']['elasticsearch']['install_type']
   version node['mconf-stats']['elasticsearch']['version']
   package_options "--force-confnew"
 end
 
-#
-# Elasticsearch cookbook, for some reason, stopped upgrade the elasticsearch
-# instance already installed, for this reason the following method was inserted
-# to ensure the upgrade of the instance.
-#
-# Let's test Elasticsearch cookbook first
-#
-# dpkg_package 'elasticsearch' do
-#   action :install
-#   options "--force-confnew"
-#   source "/var/chef/cache/elasticsearch-#{version node['mconf-stats']['elasticsearch']['version']}.deb"
-#   version version node['mconf-stats']['elasticsearch']['version']
-# end
-
-#
-# Restarting the instance to ensure that the new version is initialized
-# before the configuration.
-#
+# Restart Elasticsearch service before configuring it
 service 'elasticsearch' do
   action :restart
 end
 
+# Wait up to 30 seconds until Elasticsearch starts
 es_url = "http://localhost:#{node['mconf-stats']['elasticsearch']['http']['port']}"
-
 ruby_block "wait elasticsearch to start" do
   block do
     1.upto(30) do |i|
@@ -74,6 +61,7 @@ ruby_block "wait elasticsearch to start" do
   action :run
 end
 
+# Configure Elasticsearch using cookbook-elasticsearch cookbook resource
 elasticsearch_configure 'elasticsearch' do
     allocated_memory node['mconf-stats']['elasticsearch']['allocated_memory']
     configuration ({
@@ -84,13 +72,16 @@ elasticsearch_configure 'elasticsearch' do
     })
 end
 
+# Create Elasticsearch service using cookbook-elasticsearch cookbook resource
 elasticsearch_service 'elasticsearch'
 
-# Ensure elasticsearch is running, we need it now (kibana also needs it)
+# Start Elasticsearch service
 service 'elasticsearch' do
   action :start
 end
 
+# Ensure Elasticsearch is running. We need it now (kibana also does).
+# Wait up to 30 seconds until Elasticsearch starts
 ruby_block "wait elasticsearch to start" do
   block do
     1.upto(30) do |i|
@@ -104,7 +95,7 @@ ruby_block "wait elasticsearch to start" do
   action :run
 end
 
-# Default configurations for elasticsearch
+# Import default configurations for Elasticsearch using the _cluster API
 bash "elasticsearch default configs: disk threshold" do
   code <<-EOS
     curl -XPUT #{es_url}/_cluster/settings -d '{
@@ -118,6 +109,7 @@ bash "elasticsearch default configs: disk threshold" do
   action :run
 end
 
+# Always restart the service at the end of the recipe
 service 'elasticsearch' do
   action :restart
 end

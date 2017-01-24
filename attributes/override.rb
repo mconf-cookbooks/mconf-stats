@@ -33,6 +33,11 @@ override['logstash']['instance'][logstash_instance]['gc_opts']           = node[
 override['logstash']['instance'][logstash_instance]['java_opts']         = node['logstash']['instance_default']['java_opts']
 override['logstash']['instance'][logstash_instance]['ipv4_only']         = node['logstash']['instance_default']['ipv4_only']
 
+# Elasticsearch
+
+# Elasticsearch cookbook-elasticsearch cookbook override settings
+# Source: https://github.com/elastic/cookbook-elasticsearch
+
 override['elasticsearch']['version']          = node['mconf-stats']['elasticsearch']['version']
 override['elasticsearch']['allocated_memory'] = node['mconf-stats']['elasticsearch']['allocated_memory']
 override['elasticsearch']['http']['port']     = node['mconf-stats']['elasticsearch']['http']['port']

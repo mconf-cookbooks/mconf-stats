@@ -90,6 +90,8 @@ default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']  =
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']          = 'lumberjack.key'
 
 # Elasticsearch
+
+# Elasticsearch general and installation settings
 default['mconf-stats']['elasticsearch']['version']                   = "5.1.2"
 default['mconf-stats']['elasticsearch']['install_type']              = "package"
 default['mconf-stats']['elasticsearch']['cluster']['name']           = "mconf-cluster"
@@ -106,7 +108,6 @@ default['mconf-stats']['elasticsearch']['disk_threshold']['enabled'] = true
 default['mconf-stats']['elasticsearch']['disk_threshold']['low']     = '85%'
 default['mconf-stats']['elasticsearch']['disk_threshold']['high']    = '90%'
 default['mconf-stats']['elasticsearch']['backup_repo']               = ['/opt/elasticsearch/snapshots']
-
 
 # Kibana
 default['mconf-stats']['kibana']['basedir']   = '/opt'

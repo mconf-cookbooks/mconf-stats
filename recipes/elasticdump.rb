@@ -10,10 +10,13 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Install necessary packages (such as Java)
 include_recipe 'mconf-stats::common'
 
+# Install Node.js and npm via nodejs cookbook recipe
 include_recipe 'nodejs'
 
+# Install Elasticdump via nodejs cookbook resource
 nodejs_npm 'elasticdump' do
   version node['mconf-stats']['elasticdump']['version']
 end

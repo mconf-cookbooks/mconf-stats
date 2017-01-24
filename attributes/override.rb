@@ -99,6 +99,10 @@ override['logstash-forwarder']['ssl_ca']           = "#{node['mconf-stats']['log
 
 
 # Elasticdump
+
+# Node.js nodejs cookbook override settings
+# Source: https://github.com/redguide/nodejs
+
 override['nodejs']['engine']         = 'node'
 override['nodejs']['install_method'] = 'source'
 override['nodejs']['repo']           = 'https://deb.nodesource.com/node_6.x'

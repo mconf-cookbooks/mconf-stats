@@ -117,7 +117,7 @@ end
 # have dynamic attributes such as Elasticsearch server address
 
 # Copy '01-input-beats.conf' template
-template "#{conf_dir}/01-input-beats-teste.conf" do
+template "#{conf_dir}/01-input-beats.conf" do
   source "logstash/logstash_configs/01-input-beats.conf.erb"
   mode '0660'
   user instance_configs['user']
@@ -130,7 +130,7 @@ template "#{conf_dir}/01-input-beats-teste.conf" do
 end
 
 # Copy '12-filter-elasticsearch-xml_cdr.conf' template
-template "#{conf_dir}/12-filter-freeswitch-xml_cdr-teste.conf" do
+template "#{conf_dir}/12-filter-freeswitch-xml_cdr.conf" do
   source "logstash/logstash_configs/12-filter-freeswitch-xml_cdr.conf.erb"
   mode '0660'
   user instance_configs['user']
@@ -142,7 +142,7 @@ template "#{conf_dir}/12-filter-freeswitch-xml_cdr-teste.conf" do
 end
 
 # Copy '23-output-elasticsearch.conf' template
-template "#{conf_dir}/23-output-elasticsearch-teste.conf" do
+template "#{conf_dir}/23-output-elasticsearch.conf" do
   source "logstash/logstash_configs/23-output-elasticsearch.conf.erb"
   mode '0660'
   user instance_configs['user']

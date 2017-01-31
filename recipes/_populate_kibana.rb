@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: mconf-stats
-# Recipe:: populate_kibana
+# Recipe:: _populate_kibana
 # Author:: Kazuki Yokoyama (<yokoyama.km@gmail.com>)
 #
 # This file is part of the Mconf project.

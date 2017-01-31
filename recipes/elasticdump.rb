@@ -11,7 +11,7 @@
 #
 
 # Install necessary packages (such as Java)
-include_recipe 'mconf-stats::common'
+include_recipe 'mconf-stats::_common'
 
 # Install Node.js and npm via nodejs cookbook recipe
 include_recipe 'nodejs'

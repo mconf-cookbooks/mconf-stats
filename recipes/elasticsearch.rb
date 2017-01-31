@@ -11,7 +11,7 @@
 #
 
 # Install necessary packages (such as Java)
-include_recipe 'mconf-stats::common'
+include_recipe 'mconf-stats::_common'
 
 # Create Elasticsearch user and group
 elasticsearch_user 'elasticsearch' do

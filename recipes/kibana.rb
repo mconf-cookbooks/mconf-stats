@@ -12,7 +12,7 @@
 #
 
 # Install necessary packages (such as Java)
-include_recipe 'mconf-stats::common'
+include_recipe 'mconf-stats::_common'
 
 # Install Elasticdump
 include_recipe 'mconf-stats::elasticdump'
@@ -90,7 +90,7 @@ template '/etc/systemd/system/kibana.service' do
 end
 
 # Populate Kibana from data_bags
-include_recipe "mconf-stats::populate_kibana"
+include_recipe "mconf-stats::_populate_kibana"
 
 # In the newest versions of Kibana this file is created and used in the initialization
 # of the instance. But the last version of the cookbook don't treat this file very well.

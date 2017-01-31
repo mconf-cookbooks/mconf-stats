@@ -11,7 +11,7 @@
 #
 
 # Install necessary packages (such as Java)
-include_recipe 'mconf-stats::common'
+include_recipe 'mconf-stats::_common'
 
 node.run_state['lumberjack_for'] = :logstash_server
 

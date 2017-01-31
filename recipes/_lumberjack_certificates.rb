@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: mconf-stats
-# Recipe:: default
+# Recipe:: _lumberjack_certificates
 # Author:: Leonardo Crauss Daronco (<daronco@mconf.org>)
 #
 # This file is part of the Mconf project.

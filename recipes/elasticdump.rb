@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: mconf-stats
-# Recipe:: default
+# Recipe:: elasticdump
 # Author:: Leonardo Crauss Daronco (<daronco@mconf.org>)
 #
 # This file is part of the Mconf project.

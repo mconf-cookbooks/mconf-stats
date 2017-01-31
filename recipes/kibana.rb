@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: mconf-stats
-# Recipe:: default
+# Recipe:: kibana
 # Author:: Leonardo Crauss Daronco (<daronco@mconf.org>)
 # Modified by: Kazuki Yokoyama (<yokoyama.km@gmail.com>)
 #

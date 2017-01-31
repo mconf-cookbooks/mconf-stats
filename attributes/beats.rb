@@ -16,5 +16,6 @@ default['mconf-stats']['beats']['data_item']            = 'secrets'
 default['mconf-stats']['beats']['apt']['uri']           = 'https://artifacts.elastic.co/packages/5.x/apt'
 default['mconf-stats']['beats']['apt']['description']   = 'Elastic Beats Repository'
 default['mconf-stats']['beats']['apt']['components']    = %w(stable main)
+default['mconf-stats']['beats']['apt']['distribution']  = ''
 default['mconf-stats']['beats']['apt']['action']        = :add
 default['mconf-stats']['beats']['apt']['key']           = 'https://artifacts.elastic.co/GPG-KEY-elasticsearch'

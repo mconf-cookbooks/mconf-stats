@@ -14,7 +14,9 @@
 apt_repository 'beats' do
   uri node['mconf-stats']['beats']['apt']['uri']
   components node['mconf-stats']['beats']['apt']['components']
+  distribution node['mconf-stats']['beats']['apt']['distribution']
   key node['mconf-stats']['beats']['apt']['key']
+  deb_src false
   action node['mconf-stats']['beats']['apt']['action']
 end
 

@@ -1,7 +1,7 @@
 mconf-stats Cookbook
 =================
 
-Installs Mconf-Stats - Mconf's Elastic stack ([Beats](https://www.elastic.co/products/beats), [Elasticsearch](https://www.elastic.co/products/elasticsearch), [Logstash](https://www.elastic.co/products/logstash), [Kibana](https://www.elastic.co/products/kibana)).
+Installs Mconf-Stats - Mconf's Elastic stack ([Beats](https://www.elastic.co/products/beats), [Logstash](https://www.elastic.co/products/logstash), [Elasticsearch](https://www.elastic.co/products/elasticsearch) and [Kibana](https://www.elastic.co/products/kibana)).
 
 Requirements
 ------------
@@ -14,14 +14,9 @@ It has been tested with Chef 12.5.1, but should work with Chef 12.X as well.
 Supported versions
 -----
 
-The versions currently supported by this cookbook are:
+This cookbook currently supports all 5.X versions including the latest 5.2.0 for all Elastic stack.
 
-* Filebeat: 5.1.2.
-* Packetbeat: 5.1.2.
-* Logstash: 5.1.2.
-* Elasticsearch: 5.1.2.
-* Kibana: 5.1.2.
-* Elasticdump: 3.0.2.
+Default Elasticdump version is 3.0.2.
 
 Attributes
 -----
@@ -41,12 +36,14 @@ default['mconf-stats']['beats']['apt']['uri']      = 'https://artifacts.elastic.
 Other configurations are Beat-specific. For instance:
 
 ```
+default['mconf-stats']['beats']['filebeat']['version'] = '5.2.0'
 default['mconf-stats']['beats']['filebeat']['config_path'] = '/etc/filebeat/filebeat.yml'
 ```
 
 and
 
 ```
+default['mconf-stats']['beats']['packetbeat']['version'] = '5.2.0'
 default['mconf-stats']['beats']['packetbeat']['service_name'] = 'packetbeat'
 ```
 
@@ -54,9 +51,10 @@ Please, consult `beats.rb` for Beats-general attributes and `filebeat.rb` or `pa
 
 #### Logstash
 
-You can set Logstash's configurations such as directory paths:
+You can set Logstash's configurations such as version and directory paths:
 
 ```
+default['mconf-stats']['logstash']['version']         = '5.2.0'
 default['mconf-stats']['logstash']['instance_bin']    = "#{node['mconf-stats']['logstash']['instance_home']}/bin"
 default['mconf-stats']['logstash']['instance_config'] = "#{node['mconf-stats']['logstash']['instance_home']}/config"
 ```
@@ -64,9 +62,20 @@ default['mconf-stats']['logstash']['instance_config'] = "#{node['mconf-stats']['
 and Elasticsearch destination:
 
 ```
-default['mconf-stats']['logstash']['es_server'] = '127.0.0.1'
-default['mconf-stats']['logstash']['es_port']   = '9200'
-default['mconf-stats']['logstash']['es_index']  = 'logstash-%{+YYYY.MM.dd}'
+default['mconf-stats']['logstash']['es']['server']      = '127.0.0.1'
+default['mconf-stats']['logstash']['es']['port']        = '9200'
+default['mconf-stats']['logstash']['es']['index']       = 'logstash-%{+YYYY.MM.dd}'
+default['mconf-stats']['logstash']['es']['index_alias'] = 'my_alias'
+```
+
+Index templates that will be imported into Elasticsearch can also be customized:
+
+```
+default['mconf-stats']['logstash']['es']['index_template']['template_name']      = 'logstash'
+default['mconf-stats']['logstash']['es']['index_template']['index_pattern']      = 'logstash-*'
+default['mconf-stats']['logstash']['es']['index_template']['number_of_shards']   = 5
+default['mconf-stats']['logstash']['es']['index_template']['number_of_replicas'] = 2
+default['mconf-stats']['logstash']['es']['index_template']['template_overwrite'] = 'true'
 ```
 
 > It's not necessary to modify Logstash's configuration at `override.rb`. Those are simply copies of default settings that are used by Logstash's cookbook.
@@ -78,7 +87,7 @@ For a full list of Logstash's attributes, see `default.rb`.
 Elasticsearch's attributes can be set with:
 
 ```
-default['mconf-stats']['elasticsearch']['version']          = "5.1.2"
+default['mconf-stats']['elasticsearch']['version']          = "5.2.0"
 default['mconf-stats']['elasticsearch']['allocated_memory'] = "256m"
 default['mconf-stats']['elasticsearch']['cluster']['name']  = "mconf-cluster"
 ```
@@ -92,15 +101,15 @@ For a full list of Elasticsearch's attributes, see `default.rb`.
 Finally, you can set Kibana's attributes as well:
 
 ```
+default['mconf-stats']['kibana']['version'] = '5.2.0'
 default['mconf-stats']['kibana']['basedir'] = '/opt'
-default['mconf-stats']['kibana']['version'] = '5.1.2'
 ```
 
 The Elasticsearch's instance from where Kibana must retrieve data can be set with:
 
 ```
-default['mconf-stats']['kibana']['es_index']  = '.kibana'
-default['mconf-stats']['kibana']['es_server'] = '127.0.0.1'
+default['mconf-stats']['kibana']['es']['index']  = '.kibana'
+default['mconf-stats']['kibana']['es']['server'] = '127.0.0.1'
 ```
 
 > Don't change `override.rb`, you know.
@@ -122,7 +131,7 @@ Recipes
 
 #### default
 
-Default recipe. It installs Logstash, Elasticsearch and Kibana on the same machine.
+Default recipe. It installs Elasticsearch, Logstash and Kibana (in this order) on the same machine.
 Other packages are also installed (eg., Node.js and Elasticdump).
 
 Configuration example:
@@ -136,6 +145,7 @@ Configuration example:
   "mconf-stats": {
     "domain": "10.0.1.2",
     "logstash": {
+      "version": "5.2.0",
       "debug": true,
       "user_configs": "logstash_configs",
       "user_templates": "logstash_templates",
@@ -145,12 +155,21 @@ Configuration example:
         }
       },
       "plugins": ["logstash-filter-elasticsearch"],
-      "es_server": "elasticsearch-server.your.domain",
-      "es_port": "9200",
-      "es_index": "logstash-%{+YYYY.MM.dd}",
-      "es_template": "index-template-name"
+      "es": {
+        "server": "elasticsearch-server.your.domain",
+        "port": "9200",
+        "index": "logstash-%{+YYYY.MM.dd}",
+        "index_template": {
+          "template_name": "logstash",
+          "index_pattern": "logstash-*",
+          "number_of_shards": 5,
+          "number_of_replicas": 2,
+          "template_overwrite": true
+        }
+      }
     },
     "elasticsearch": {
+      "version": "5.2.0",
       "allocated_memory": "256m",
       "cluster": {
         "name": "mconf_cluster"
@@ -160,9 +179,12 @@ Configuration example:
       }
     },
     "kibana": {
+      "version": "5.2.0",
       "bind_interface": "127.0.0.1",
-      "es_server": "elasticsearch-server.your.domain",
-      "es_index": ".kibana"
+      "es": {
+        "server": "elasticsearch-server.your.domain",
+        "index": ".kibana"
+      }
     }
   },
 
@@ -199,7 +221,11 @@ Configuration example:
       "redis_port": "6379",
       "install_packetbeat": true,
       "install_filebeat": true,
+      "packetbeat": {
+        "version": "5.2.0"
+      },
       "filebeat": {
+        "version": "5.2.0",
         "prospectors": [
           {
             "paths": ["/path/to/files.xml"],

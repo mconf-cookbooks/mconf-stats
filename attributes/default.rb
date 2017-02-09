@@ -38,6 +38,28 @@
 #   init: /etc/systemd/system/kibana.service
 #   default port: 5601, 80
 
+# Versions
+
+# Logstash
+
+# SHA256 of logstash-<version>.tar.gz files
+default['mconf-stats']['logstash']['5.0.0']['checksum'] = 'b5ff5336a49540510f415479deb64566c3b2dad1ce8856dde3df3b6ca1aa8d90'
+default['mconf-stats']['logstash']['5.0.1']['checksum'] = 'd4cb9a624e12f8e4cf852a251c96b371094009b84a85231c9604ba7d6523da4d'
+default['mconf-stats']['logstash']['5.0.2']['checksum'] = 'eff45f965118b6ef767f719d85f6dbca438ea2daa5e901907a32fa5bf1a70d9c'
+default['mconf-stats']['logstash']['5.1.1']['checksum'] = '9ce438ec331d3311acc55f22553a3f5a7eaea207b8aa2863164bb2767917de1f'
+default['mconf-stats']['logstash']['5.1.2']['checksum'] = 'ffa4e370c6834f8e2591a23147a74a8cea04509efc6cf8c02b5cc563455c559c'
+default['mconf-stats']['logstash']['5.2.0']['checksum'] = 'f371d20127fb9b34a6575ba0d69fa764df73718eda02adc177a85fd3117500f0'
+
+# Kibana
+
+# SHA256 of kibana-<version>-linux-x86_64.tar.gz files
+default['mconf-stats']['kibana']['5.0.0']['checksum'] = '39cf5bc9e249df7ef98f0b7883f4ff23514a40290dfc48c5101b1d1ab67d60ae'
+default['mconf-stats']['kibana']['5.0.1']['checksum'] = 'bf845a27d37c24a8d63f8407691001d3c8dd31d2317e6866a4473d421aa9acd9'
+default['mconf-stats']['kibana']['5.0.2']['checksum'] = '90998b3dce006dc0193a9a65ef79e27514bcbdc4909e6215ae75fa5425b24e95'
+default['mconf-stats']['kibana']['5.1.1']['checksum'] = 'da0383be8a12936c7d2a0a145e7bf0eb15abf972e585e0115ed8742032c79245'
+default['mconf-stats']['kibana']['5.1.2']['checksum'] = 'c2e30b9581e7222e8f2536d4b08087dc282a6b31a24ec0e43b905507fe2f2b04'
+default['mconf-stats']['kibana']['5.2.0']['checksum'] = '729af8ab00f719f2038f6c499e508744b274487756e0214b660535ebead6f28a'
+
 # User and group on the server the application is being deployed
 default['mconf-stats']['user']      = 'mconf'
 default['mconf-stats']['app_group'] = 'www-data'
@@ -70,7 +92,7 @@ default['mconf-stats']['logstash']['instance_template']   = "#{node['mconf-stats
 default['mconf-stats']['logstash']['install_type']        = 'tarball'
 default['mconf-stats']['logstash']['version']             = '5.1.2'
 default['mconf-stats']['logstash']['source_url']          = "https://artifacts.elastic.co/downloads/logstash/logstash-#{node['mconf-stats']['logstash']['version']}.tar.gz"
-default['mconf-stats']['logstash']['checksum']            = 'ffa4e370c6834f8e2591a23147a74a8cea04509efc6cf8c02b5cc563455c559c'  # SHA256 of logstash-5.1.2.tar.gz
+default['mconf-stats']['logstash']['checksum']            = node['mconf-stats']['logstash']["#{node['mconf-stats']['logstash']['version']}"]['checksum']
 
 # Logstash migration settings
 default['mconf-stats']['logstash']['migration_dir']     = "#{node['mconf-stats']['logstash']['instance_home']}/etc/migration"
@@ -81,10 +103,17 @@ default['mconf-stats']['logstash']['user_configs']   = nil # Directories from th
 default['mconf-stats']['logstash']['user_templates'] = nil # All files in these directories will be automatically copied to logstash.
 
 # Logstash Elasticsearch settings
-default['mconf-stats']['logstash']['es_server']   = '127.0.0.1'
-default['mconf-stats']['logstash']['es_port']     = '9200'
-default['mconf-stats']['logstash']['es_index']    = 'logstash-%{+YYYY.MM.dd}'
-default['mconf-stats']['logstash']['es_template'] = 'index-template'
+default['mconf-stats']['logstash']['es']['server']             = '127.0.0.1'
+default['mconf-stats']['logstash']['es']['port']               = '9200'
+default['mconf-stats']['logstash']['es']['index']              = 'logstash-%{+YYYY.MM.dd}'
+default['mconf-stats']['logstash']['es']['index_alias']        = nil
+
+# Logstash Elasticsearch index template settings
+default['mconf-stats']['logstash']['es']['index_template']['template_name']      = 'index-template'
+default['mconf-stats']['logstash']['es']['index_template']['index_pattern']      = 'logstash-*'
+default['mconf-stats']['logstash']['es']['index_template']['number_of_shards']   = 1
+default['mconf-stats']['logstash']['es']['index_template']['number_of_replicas'] = 0
+default['mconf-stats']['logstash']['es']['index_template']['template_overwrite'] = false
 
 # Logstash Lumberjack settings
 default['mconf-stats']['logstash']['inputs']['lumberjack']                     = {}
@@ -93,7 +122,7 @@ default['mconf-stats']['logstash']['inputs']['lumberjack']['host']             =
 default['mconf-stats']['logstash']['inputs']['lumberjack']['port']             = 5960
 default['mconf-stats']['logstash']['inputs']['lumberjack']['data_bag']         = 'lumberjack'
 default['mconf-stats']['logstash']['inputs']['lumberjack']['data_item']        = 'secrets'
-default['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path'] = "#{default['mconf-stats']['logstash']['instance_home']}/certs"
+default['mconf-stats']['logstash']['inputs']['lumberjack']['certificate_path'] = "#{node['mconf-stats']['logstash']['instance_home']}/certs"
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_ca']           = ['CA.crt']
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_certificate']  = 'lumberjack.crt'
 default['mconf-stats']['logstash']['inputs']['lumberjack']['ssl_key']          = 'lumberjack.key'
@@ -132,14 +161,14 @@ default['mconf-stats']['kibana']['basedir']   = '/opt'
 
 # Kibana installation settings
 default['mconf-stats']['kibana']['version']   = '5.1.2'
-default['mconf-stats']['kibana']['checksum']  = 'c2e30b9581e7222e8f2536d4b08087dc282a6b31a24ec0e43b905507fe2f2b04'  # SHA256 of kibana-5.1.2-linux-x86_64.tar.gz
+default['mconf-stats']['kibana']['checksum']  = node['mconf-stats']['kibana']["#{node['mconf-stats']['kibana']['version']}"]['checksum']
 
 # Kibana mconf-stats cookbook settings
 default['mconf-stats']['kibana']['data_bag']  = 'kibana'
 
 # Kibana Elasticsearch settings
-default['mconf-stats']['kibana']['es_index']  = '.kibana'
-default['mconf-stats']['kibana']['es_server'] = '127.0.0.1'
+default['mconf-stats']['kibana']['es']['index']  = '.kibana'
+default['mconf-stats']['kibana']['es']['server'] = '127.0.0.1'
 
 # Elasticdump
 

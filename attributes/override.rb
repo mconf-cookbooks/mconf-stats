@@ -69,7 +69,7 @@ override['kibana']['install_path']           = node['mconf-stats']['kibana']['ba
 override['kibana']['install_dir']            = "#{node['kibana']['install_path']}/kibana"
 override['kibana']['user']                   = node['mconf-stats']['kibana']['user']
 override['kibana']['group']                  = node['mconf-stats']['kibana']['group']
-override['kibana']['config']['kibana_index'] = node['mconf-stats']['kibana']['es_index']
+override['kibana']['config']['kibana_index'] = node['mconf-stats']['kibana']['es']['index']
 
 override['kibana']['install_type']           = 'file'
 override['kibana']['file']['type']           = 'tgz'
@@ -86,7 +86,7 @@ override['kibana']['webserver_scheme']   = 'http://'
 # override['kibana']['webserver_aliases']  = [node['ipaddress']]
 # override['kibana']['webserver_listen']   = node['ipaddress']
 
-override['kibana']['es_server']          = node['mconf-stats']['kibana']['es_server']
+override['kibana']['es_server']          = node['mconf-stats']['kibana']['es']['server']
 override['kibana']['es_port']            = node['mconf-stats']['elasticsearch']['http']['port']
 # override['kibana']['es_role']            = 'elasticsearch_server'
 # override['kibana']['es_scheme']          = 'http://'

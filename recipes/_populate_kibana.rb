@@ -10,6 +10,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Elasticsearch server and Kibana's configuration index
+es_server = "#{node['kibana']['es_scheme']}#{node['kibana']['es_server']}:#{node['kibana']['es_port']}"
+es_index = node['mconf-stats']['kibana']['es']['index']
+
+
 # Accept data_bags to populate Kibana
 bag_name = node['mconf-stats']['kibana']['data_bag']
 begin
@@ -34,7 +39,7 @@ kibana_bag.each_pair do |name, url|
   bash "load kibana item #{name}" do
     code Elasticdump.import_cmd(input_file,
                                 es_server,
-                                node['mconf-stats']['kibana']['es_index'])
+                                es_index)
     action :run
   end
 end

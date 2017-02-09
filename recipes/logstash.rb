@@ -30,12 +30,18 @@ jvm_conf = ::File.join(config_dir, "jvm.options")
 startup_conf = ::File.join(config_dir, "startup.options")
 
 # Setup Elasticsearch settings
-es_server = node['mconf-stats']['logstash']['es_server']
-es_port = node['mconf-stats']['logstash']['es_port']
-es_index = node['mconf-stats']['logstash']['es_index']
-es_template = node['mconf-stats']['logstash']['es_template']
-es_template_file = "#{es_template}.json"
+es_server = node['mconf-stats']['logstash']['es']['server']
+es_port = node['mconf-stats']['logstash']['es']['port']
+es_index = node['mconf-stats']['logstash']['es']['index']
+es_index_alias = node['mconf-stats']['logstash']['es']['index_alias']
+es_use_index = es_index_alias || es_index
+es_template_name = node['mconf-stats']['logstash']['es']['index_template']['template_name']
+es_index_pattern = node['mconf-stats']['logstash']['es']['index_template']['index_pattern']
+es_number_of_shards = node['mconf-stats']['logstash']['es']['index_template']['number_of_shards']
+es_number_of_replicas = node['mconf-stats']['logstash']['es']['index_template']['number_of_replicas']
+es_template_file = "#{es_template_name}.json"
 es_template_path = ::File.join(template_dir, es_template_file)
+es_template_overwrite = node['mconf-stats']['logstash']['es']['index_template']['template_overwrite']
 
 # Create Logstash instance using logstash cookbook resource
 logstash_instance instance_name do
@@ -150,25 +156,34 @@ template "#{conf_dir}/23-output-elasticsearch.conf" do
   variables(
     es_server: es_server,
     es_port: es_port,
-    es_index: es_index,
+    es_index: es_use_index,
     es_template_path: es_template_path,
-    es_template: es_template
+    es_template_name: es_template_name,
+    es_template_overwrite: es_template_overwrite
   )
 end
 
-# Copy user index template files, if any
-# These are mainly used for setting mappings
-remote_directory template_dir do
-  source node['mconf-stats']['logstash']['user_templates']
-  owner instance_configs['user']
+# Create template directory before creating the template
+directory template_dir do
+  user instance_configs['user']
   group instance_configs['group']
-  mode '0755'
-  files_mode '0660'
-  files_owner instance_configs['user']
-  files_group instance_configs['group']
-  purge true
+  recursive true
   action :create
-  not_if { node['mconf-stats']['logstash']['user_templates'].nil? }
+end
+
+# Copy 'index-template.json' template
+# These are mainly used for setting mappings and aliases
+template es_template_path do
+  source "logstash/logstash_templates/#{es_template_name}.json.erb"
+  mode '0660'
+  user instance_configs['user']
+  group instance_configs['group']
+  variables(
+    es_index_pattern: es_index_pattern,
+    es_number_of_shards: es_number_of_shards,
+    es_number_of_replicas: es_number_of_replicas,
+    es_index_alias: es_index_alias
+  )
 end
 
 # Install plugins for Logstash

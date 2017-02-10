@@ -10,15 +10,19 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Add Beats official repository
 apt_repository 'beats' do
   uri node['mconf-stats']['beats']['apt']['uri']
   components node['mconf-stats']['beats']['apt']['components']
+  distribution node['mconf-stats']['beats']['apt']['distribution']
   key node['mconf-stats']['beats']['apt']['key']
+  deb_src false
   action node['mconf-stats']['beats']['apt']['action']
 end
 
 package "apt-transport-https"
 
+# Update package repositories list
 execute 'apt-get-update' do
   command 'apt-get update'
   ignore_failure true

@@ -10,10 +10,16 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+# Install necessary packages (such as Java)
+include_recipe 'mconf-stats::_common'
+
 node.run_state['lumberjack_for'] = :logstash_server
 
+# Install Logstash
 include_recipe 'mconf-stats::logstash'
 
+# Install 'xml-simple' gem needed in Logstash filters
 gem_package 'xml-simple'
 
+# Add logstash user to syslog complementary group
 execute "usermod -a -G syslog logstash"

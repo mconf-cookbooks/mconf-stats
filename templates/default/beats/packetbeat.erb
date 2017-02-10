@@ -1,32 +1,54 @@
-interfaces:
-  device: any
+# Network device
+packetbeat.interfaces.device: any
 
-protocols:
-  redis:
-    ports: [<%= @redis_port %>]
+# Flows
+#packetbeat.flows:
+  #timeout: 30s
+  #period: 10s
 
+# Transaction protocols
+
+# Redis
+packetbeat.protocols.redis:
+  enable: true
+  ports: [<%= @redis_port %>]
+
+# General
 <% if @shipper %>
-shipper:
 <% if @shipper['name'] %>
-  name: <%= @shipper['name'] %>
+name: <%= @shipper['name'] %>
 <% end %>
 <% if @shipper['tags'] %>
-  tags: <%= @shipper['tags'] %>
+tags: <%= @shipper['tags'] %>
 <% end %>
 <% end %>
 
-output:
-  logstash:
-    hosts: ["<%= @hosts %>"]
+# Outputs
 
-    tls:
-      certificate_authorities: ["<%= @ca_authorities %>"]
-      certificate: "<%= @certificate %>"
-      certificate_key: "<%= @certificate_key %>"
+# Logstash output
+output.logstash:
+  enabled: true
+  hosts: ["<%= @hosts %>"]
 
-logging:
-  files:
-    path: /var/log/packetbeat
-    name: packetbeat
-    rotateeverybytes: 10485760 # = 10MB
-    keepfiles: 7
+  ssl.enabled: true
+  ssl.certificate_authorities: <%= @ca_authorities %>
+  ssl.certificate: "<%= @certificate %>"
+  ssl.key: "<%= @certificate_key %>"
+
+# File output
+output.file:
+  path: /home/mconf/packetbeat
+  filename: output.packetbeat
+
+# Console output
+output.console:
+  enabled: false
+  pretty: true
+
+# Logging
+logging.to_files: true
+logging.files:
+  path: /var/log/packetbeat
+  name: packetbeat
+  rotateeverybytes: 10487760 # = 10 MB
+  keepfiles: 7

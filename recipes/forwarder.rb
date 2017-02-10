@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: mconf-stats
-# Recipe:: default
+# Recipe:: forwarder
 # Author:: Leonardo Crauss Daronco (<daronco@mconf.org>)
 #
 # This file is part of the Mconf project.
@@ -9,6 +9,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
+
+# This recipe is obsolete. It has been replaced by Beats.
 
 node.run_state['lumberjack_for'] = :forwarder
 node.run_state['logstash_service'] = node['mconf-stats']['logstash-forwarder']['service_name']

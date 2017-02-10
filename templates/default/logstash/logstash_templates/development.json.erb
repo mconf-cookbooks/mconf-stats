@@ -1,0 +1,81 @@
+{
+  "template": "<%= @es_index_pattern %>",
+  "settings": {
+    "number_of_shards": <%= @es_number_of_shards %>,
+    "number_of_replicas": <%= @es_number_of_replicas %>
+  },
+  "mappings": {
+
+    "meeting": {
+      "properties": {
+        "internal_meeting_id": {
+          "type": "keyword"
+        },
+        "type": {
+          "type": "keyword"
+        },
+        "host": {
+          "type": "keyword"
+        },
+        "created_at": {
+          "type": "date"
+        },
+        "ended_at": {
+          "type": "date"
+        }
+      }
+    },
+
+    "meeting_event": {
+      "_parent": {
+        "type": "meeting"
+      },
+      "properties": {
+        "internal_meeting_id": {
+          "type": "keyword"
+        },
+        "type": {
+          "type": "keyword"
+        },
+        "host": {
+          "type": "keyword"
+        },
+        "event_type": {
+          "type": "keyword"
+        },
+        "created_at": {
+          "type": "date"
+        },
+        "ended_at": {
+          "type": "date"
+        },
+
+        "variables": {
+          "properties": {
+            "start_epoch": {
+              "type": "date",
+              "format": "epoch_second"
+            },
+            "end_epoch": {
+              "type": "date",
+              "format": "epoch_second"
+            }
+          }
+        },
+
+        "geoip": {
+          "properties": {
+            "location": {
+              "type": "geo_point"
+            }
+          }
+        }
+      }
+    }
+  }
+  <% if @alias %>
+  ,"aliases": {
+    "<%= @index_alias %>": { }
+  }
+  <% end %>
+}

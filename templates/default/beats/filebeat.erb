@@ -1,33 +1,49 @@
-filebeat:
-  prospectors:
-  <% @prospectors.each do |prospector| %>
-    <%= render 'beats/prospectors.erb', variables: { prospector: prospector, input_type: @input_type, ignore_older: @ignore_older } %>
-  <% end %>
-  registry_file: /var/lib/filebeat/registry
+# Filebeat prospectors
 
+filebeat.prospectors:
+<% @prospectors.each do |prospector| %>
+  <%= render 'beats/prospectors.erb', variables: { prospector: prospector, input_type: @input_type, ignore_older: @ignore_older } %>
+<% end %>
+
+# Filebeat global options
+filebeat.registry_file: /var/lib/filebeat/registry
+
+# General
 <% if @shipper %>
-shipper:
 <% if @shipper['name'] %>
-  name: <%= @shipper['name'] %>
+name: <%= @shipper['name'] %>
 <% end %>
 <% if @shipper['tags'] %>
-  tags: <%= @shipper['tags'] %>
+tags: <%= @shipper['tags'] %>
 <% end %>
 <% end %>
 
-output:
-  logstash:
-    enabled: true
-    hosts: ["<%= @hosts %>"]
+# Outputs
 
-    tls:
-      certificate_authorities: ["<%= @ca_authorities %>"]
-      certificate: "<%= @certificate %>"
-      certificate_key: "<%= @certificate_key %>"
+# Logstash output
+output.logstash:
+  enabled: true
+  hosts: ["<%= @hosts %>"]
 
-logging:
-  files:
-    path: /var/log/filebeat
-    name: filebeat
-    rotateeverybytes: 10485760 # = 10MB
-    keepfiles: 7
+  ssl.enabled: true
+  ssl.certificate_authorities: <%= @ca_authorities %>
+  ssl.certificate: "<%= @certificate %>"
+  ssl.key: "<%= @certificate_key %>"
+
+# File output
+output.file:
+  path: /home/mconf/filebeat
+  filename: output.filebeat
+
+# Console output
+output.console:
+  enabled: false
+  pretty: true
+
+# Logging
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  rotateeverybytes: 10487760 # = 10 MB
+  keepfiles: 7

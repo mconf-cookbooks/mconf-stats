@@ -12,9 +12,11 @@
 
 if node['mconf-stats']['beats']['install_certificates']
 
+  # Setup SSL certificate paths and files
   path = node['mconf-stats']['beats']['certificate_path']
   certificate_filename = node['mconf-stats']['beats']['ssl_certificate']
   key_filename = node['mconf-stats']['beats']['ssl_key']
+  ca_filenames = node['mconf-stats']['beats']['ssl_ca']
   bag_name = node['mconf-stats']['beats']['data_bag']
   bag_item = node['mconf-stats']['beats']['data_item']
   target_user = 'root'
@@ -22,8 +24,9 @@ if node['mconf-stats']['beats']['install_certificates']
 
   certificate_path = "#{path}/#{certificate_filename}"
   key_path = key_filename ? "#{path}/#{key_filename}" : nil
+  ca_path = ca_filenames.map { |ca| "#{path}/#{ca}" }
 
-
+  # Create directory which will hold the certificate
   directory path do
     owner target_user
     group target_group
@@ -31,7 +34,6 @@ if node['mconf-stats']['beats']['install_certificates']
     recursive true
     action :create
   end
-
 
   # Read the certificates from a data bag and save to files
   # Note: adapted code from https://github.com/rackspace-cookbooks/elkstack/blob/master/recipes/_lumberjack_secrets.rb
@@ -44,6 +46,7 @@ if node['mconf-stats']['beats']['install_certificates']
     beats_secrets = nil
   end
 
+  # Decode Base64-encoded SSL related files from data_bags
   if !beats_secrets.nil?
     if beats_secrets['key']
       node.run_state['lumberjack_decoded_key'] = Base64.decode64(beats_secrets['key'])
@@ -55,10 +58,17 @@ if node['mconf-stats']['beats']['install_certificates']
     else
       Chef::Log.warn('Found a data bag for beats secrets, but it was missing the \'certificate\' item')
     end
+    if beats_secrets['ca'] and not beats_secrets['ca'].empty?
+      node.run_state['lumberjack_decoded_ca'] = []
+      beats_secrets['ca'].each { |ca| node.run_state['lumberjack_decoded_ca'] << Base64.decode64(ca) }
+    else
+      Chef::Log.warn('Found a data bag for beats secrets, but it was missing the \'CA\' item')
+    end
   else
     Chef::Log.warn('Could not find an encrypted or unencrypted data bag to use as a beats keypair')
   end
 
+  # Create SSL Key file if a path for one exists
   unless key_path.nil?
     file key_path do
       content node.run_state['lumberjack_decoded_key']
@@ -69,6 +79,7 @@ if node['mconf-stats']['beats']['install_certificates']
     end
   end
 
+  # Create SSL certificate file
   file certificate_path do
     content node.run_state['lumberjack_decoded_certificate']
     owner target_user
@@ -77,5 +88,17 @@ if node['mconf-stats']['beats']['install_certificates']
     not_if { node.run_state['lumberjack_decoded_certificate'].nil? }
   end
 
+  # Create SSL certificate authorities files
+  ca_path.zip(node.run_state['lumberjack_decoded_ca']).each do |ca_file, ca_decoded|
+    file ca_file do
+      content ca_decoded
+      owner target_user
+      group target_group
+      mode '0600'
+      not_if { node.run_state['lumberjack_decoded_ca'].empty? }
+    end
+  end
+
+  # Avoid other Beats from reinstalling the SSL related files
   node.default['mconf-stats']['beats']['install_certificates'] = false
 end

@@ -1,4 +1,7 @@
-default['mconf-stats']['beats']['packetbeat']['version']      = '1.0.0'
+# Packetbeat
+
+# Packetbeat specific settings
+default['mconf-stats']['beats']['packetbeat']['version']      = '5.1.2'
 default['mconf-stats']['beats']['packetbeat']['conf_dir']     = '/etc/packetbeat'
 default['mconf-stats']['beats']['packetbeat']['conf_file']    = ::File.join(node['mconf-stats']['beats']['packetbeat']['conf_dir'], 'packetbeat.yml')
 default['mconf-stats']['beats']['packetbeat']['service_name'] = 'packetbeat'

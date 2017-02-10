@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: mconf-stats
-# Recipe:: default
-# Author:: Leonardo Crauss Daronco (<daronco@mconf.org>)
+# Recipe:: _common
+# Author:: Kazuki Yokoyama (<yokoyama.km@gmail.com>)
 #
 # This file is part of the Mconf project.
 #
@@ -10,7 +10,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-# Default recipe installs Logstash, Elasticsearch and Kibana
-include_recipe 'mconf-stats::elasticsearch'
-include_recipe 'mconf-stats::logstash-server'
-include_recipe 'mconf-stats::kibana'
+# Install all necessary packages
+%W{git curl #{node['mconf-stats']['java_pkg']}}.each do |pkg|
+  package pkg
+end

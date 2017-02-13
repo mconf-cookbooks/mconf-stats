@@ -12,34 +12,31 @@
 
 # Elasticsearch server and Kibana's configuration index
 es_server = "#{node['kibana']['es_scheme']}#{node['kibana']['es_server']}:#{node['kibana']['es_port']}"
-es_index = node['mconf-stats']['kibana']['es']['index']
+es_kibana_index = node['mconf-stats']['kibana']['es']['kibana_index']
+objects_template = node['mconf-stats']['kibana']['objects_template']
+objects_file = ::File.join(Chef::Config[:file_cache_path], "#{objects_template}.json")
 
-
-# Accept data_bags to populate Kibana
-bag_name = node['mconf-stats']['kibana']['data_bag']
-begin
-  kibana_bag = Chef::DataBag.load(bag_name)
-  require 'json'
-rescue
-  kibana_bag = []
-  Chef::Log.warn("Could not find unencrypted data bag #{bag_name}")
+# Create JSON file from template with all Kibana's objects (only if such template exists)
+template objects_file do
+  source "kibana/kibana_objects/#{objects_template}.json.erb"
+  mode '0644'
+  variables(
+    index: node['mconf-stats']['kibana']['es']['index']
+  )
+  notifies :run, "ruby_block[load Kibana objects using Elasticdump]", :delayed
+  not_if { objects_template.nil? }
 end
 
-# Populate Kibana index in Elasticsearch using Elasticdump
-kibana_bag.each_pair do |name, url|
-  items = Chef::DataBagItem.load(bag_name, name)
-  # so we get only the data we need, not all object
-  items = items.to_hash
-
-  input_file = ::File.join(Chef::Config[:file_cache_path], "kibana-seed-#{name}.json")
-  file input_file do
-    content items.to_json.to_s
+# Populate Kibana index in Elasticsearch using Elasticdump (only if template was installed)
+ruby_block "load Kibana objects using Elasticdump" do
+  block do
+    Elasticdump.import_objects(objects_file, es_server, es_kibana_index)
   end
+  action :nothing
+  notifies :delete, "template[#{objects_file}]", :delayed
+end
 
-  bash "load kibana item #{name}" do
-    code Elasticdump.import_cmd(input_file,
-                                es_server,
-                                es_index)
-    action :run
-  end
+# Delete template (only if template was installed)
+template objects_file do
+  action :nothing
 end

@@ -164,11 +164,12 @@ default['mconf-stats']['kibana']['version']   = '5.1.2'
 default['mconf-stats']['kibana']['checksum']  = node['mconf-stats']['kibana']["#{node['mconf-stats']['kibana']['version']}"]['checksum']
 
 # Kibana mconf-stats cookbook settings
-default['mconf-stats']['kibana']['data_bag']  = 'kibana'
+default['mconf-stats']['kibana']['objects_template'] = nil # Traditionally 'objects'
 
 # Kibana Elasticsearch settings
-default['mconf-stats']['kibana']['es']['index']  = '.kibana'
-default['mconf-stats']['kibana']['es']['server'] = '127.0.0.1'
+default['mconf-stats']['kibana']['es']['server']        = '127.0.0.1'
+default['mconf-stats']['kibana']['es']['index']         = node['mconf-stats']['logstash']['es']['index_template']['index_pattern']
+default['mconf-stats']['kibana']['es']['kibana_index']  = '.kibana'
 
 # Elasticdump
 

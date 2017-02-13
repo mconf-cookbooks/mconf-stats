@@ -69,7 +69,7 @@ override['kibana']['install_path']           = node['mconf-stats']['kibana']['ba
 override['kibana']['install_dir']            = "#{node['kibana']['install_path']}/kibana"
 override['kibana']['user']                   = node['mconf-stats']['kibana']['user']
 override['kibana']['group']                  = node['mconf-stats']['kibana']['group']
-override['kibana']['config']['kibana_index'] = node['mconf-stats']['kibana']['es']['index']
+override['kibana']['config']['kibana_index'] = node['mconf-stats']['kibana']['es']['kibana_index']
 
 override['kibana']['install_type']           = 'file'
 override['kibana']['file']['type']           = 'tgz'

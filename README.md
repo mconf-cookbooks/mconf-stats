@@ -108,8 +108,9 @@ default['mconf-stats']['kibana']['basedir'] = '/opt'
 The Elasticsearch's instance from where Kibana must retrieve data can be set with:
 
 ```
-default['mconf-stats']['kibana']['es']['index']  = '.kibana'
-default['mconf-stats']['kibana']['es']['server'] = '127.0.0.1'
+default['mconf-stats']['kibana']['es']['server']        = '127.0.0.1'
+default['mconf-stats']['kibana']['es']['index']         = node['mconf-stats']['logstash']['es']['index']
+default['mconf-stats']['kibana']['es']['kibana_index']  = '.kibana'
 ```
 
 > Don't change `override.rb`, you know.
